@@ -1,8 +1,11 @@
-package core.node;
+package share;
+
+import java.io.Serializable;
 
 import core.player.Player;
+import share.action.Action;
 
-public class Direction {
+public class Direction implements Serializable {
 	Player player;
 	
 	int horizontalDirection;

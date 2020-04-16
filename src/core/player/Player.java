@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Player implements Serializable {
 	private String id;
 	private String name;
-	
+
 	public String getId () {
 		return this.id;
 	}
@@ -22,4 +22,7 @@ public class Player implements Serializable {
 		this.name = name;
 	}
 
+	public boolean equals (Player player) {
+		return this.id.equals(player.getId());
+	}
 }
