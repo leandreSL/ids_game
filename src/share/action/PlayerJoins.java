@@ -1,17 +1,16 @@
 package share.action;
 
-import core.player.ClientData;
 import core.player.Player;
 
-public class PlayerJoins extends Action {
+public class PlayerJoins extends ActionMessage {
+	private static final long serialVersionUID = 1L;
 
 	public PlayerJoins(Player source) {
 		super(source);
 	}
 
 	@Override
-	public void execute (ClientData data) {
-		System.out.println(this.getClass().getName());
+	public void accept(ActionVisitor visitor) {
+		visitor.visit(this);
 	}
-
 }

@@ -3,7 +3,7 @@ package share.action;
 import core.player.ClientData;
 import share.Direction;
 
-public class PlayerMoves extends Action {
+public class PlayerMoves extends ActionMessage {
 	private Direction direction;
 
 	public PlayerMoves(Direction direction) {
@@ -12,9 +12,8 @@ public class PlayerMoves extends Action {
 	}
 
 	@Override
-	public void execute (ClientData data) {
-
-		System.out.println(this.getClass().getName());
+	public void accept(ActionVisitor visitor) {
+		visitor.visit(this);
 	}
 
 }

@@ -3,7 +3,7 @@ package share;
 import java.io.Serializable;
 
 import core.player.Player;
-import share.action.Action;
+import share.action.ActionMessage;
 
 public class Direction implements Serializable {
 	Player player;

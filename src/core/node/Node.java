@@ -10,9 +10,10 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
+import core.node.board.Board;
 import core.player.Player;
 import share.Direction;
-import share.action.Action;
+import share.action.ActionMessage;
 import share.action.ChangeZone;
 import share.action.PlayerJoins;
 import share.action.PlayerLeaves;
@@ -148,7 +149,7 @@ public class Node {
 		 * TODO :
 		 * placer le joueur sur le board
 		*/
-		Action action = new PlayerJoins(player);
+		ActionMessage action = new PlayerJoins(player);
 		this.broadcastPlayers(action);
 	}
 	
@@ -176,7 +177,7 @@ public class Node {
 		// TODO : clean ce code dégueulasse à base de ifs
 		// Si déplacement = changement de noeud
 		if (true) {
-			Action action = new PlayerLeaves(sourcePlayer);
+			ActionMessage action = new PlayerLeaves(sourcePlayer);
 			this.broadcastPlayers(action, sourcePlayer);
 			
 			// Remove the player from the board
@@ -221,11 +222,13 @@ public class Node {
 		this.players_list.remove(player);
 		
 		try {
+			System.out.println("ChangeNode player \"[" + player.getId() + "] " + player.getName() + "\" from zone \"" + this.nodeName + "\" to zone \"" + destinationNode + "\"");
+			
 			// Make the player join the new node
 			channel.basicPublish(EXCHANGE_NAME, destinationNode + "_join", null, ByteSerializable.getBytes(player));
 
 			// Send the new queue node id to the player
-			Action action = new ChangeZone(player, destinationNode);
+			ActionMessage action = new ChangeZone(player, destinationNode);
 			channel.basicPublish(EXCHANGE_NAME, player.getId(), null, ByteSerializable.getBytes(action));
 		} catch (IOException e) {
 			// TODOs
@@ -236,7 +239,7 @@ public class Node {
 	/**
 	 * Send an action to all the players
 	 */
-	private void broadcastPlayers (Action action) {
+	private void broadcastPlayers (ActionMessage action) {
 		byte[] actionBytes = ByteSerializable.getBytes(action);
 		
 		for (Player player: this.players_list) {
@@ -252,7 +255,7 @@ public class Node {
 	/**
 	 * Send an action to all the players
 	 */
-	private void broadcastPlayers (Action action, Player excludedPlayer) {
+	private void broadcastPlayers (ActionMessage action, Player excludedPlayer) {
 		byte[] actionBytes = ByteSerializable.getBytes(action);
 		
 		for (Player player: this.players_list) {
