@@ -11,6 +11,6 @@ public class NodeMain {
 		}
 		
 		System.out.println("Node " + args[0]);
-		Node node = new Node(args[0], args);
+		Node node = new NodeLogger(args[0], args);
 	}
 }

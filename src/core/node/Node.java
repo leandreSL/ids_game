@@ -22,7 +22,7 @@ import share.action.PlayerMoves;
 
 public class Node {
 	private static final int[] BOARD_SIZE = {7, 7};
-    private static final String EXCHANGE_NAME = "game_exchange";
+    protected static final String EXCHANGE_NAME = "game_exchange";
     
 
 	private enum NodeName {A, B, C, D};
@@ -101,7 +101,6 @@ public class Node {
 	         */
 	        DeliverCallback deliverCallbackJoin = (consumerTag, delivery) -> {
 	        	Player player = (Player) ByteSerializable.fromBytes(delivery.getBody());
-	        	System.out.println(player.getName() + " join");
 	        	this.join(player);
 	        };
 	        channel.basicConsume(queueNameJoin, true, deliverCallbackJoin, consumerTag -> {});
@@ -142,7 +141,7 @@ public class Node {
 	 * When the player joins the zone
 	 * @param client
 	 */
-	public void join (Player player) {
+	protected void join (Player player) {
 		this.players_list.add(player);
 		
 		/*
@@ -218,12 +217,10 @@ public class Node {
 		}
 	}
 	
-	private void changeNode (Player player, String destinationNode) {
+	protected void changeNode (Player player, String destinationNode) {
 		this.players_list.remove(player);
 		
 		try {
-			System.out.println("ChangeNode player \"[" + player.getId() + "] " + player.getName() + "\" from zone \"" + this.nodeName + "\" to zone \"" + destinationNode + "\"");
-			
 			// Make the player join the new node
 			channel.basicPublish(EXCHANGE_NAME, destinationNode + "_join", null, ByteSerializable.getBytes(player));
 
