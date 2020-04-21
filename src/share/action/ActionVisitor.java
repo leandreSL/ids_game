@@ -1,14 +1,6 @@
 package share.action;
 
-import core.player.ClientData;
-
-public abstract class ActionVisitor {
-	ClientData data;
-	
-	public ActionVisitor (ClientData data) {
-		this.data = data;
-	}
-	
+public interface ActionVisitor {	
 	abstract public void visit(ChangeZone changeZoneMessage);
 	abstract public void visit(PlayerJoins playerJoinsMessage);
 	abstract public void visit(PlayerLeaves playerLeavesMessage);

@@ -2,10 +2,11 @@ package share.action;
 
 import core.player.ClientData;
 
-public class BasicActionVisitor extends ActionVisitor {
+public class BasicActionVisitor implements ActionVisitor {
+	ClientData data;
 
 	public BasicActionVisitor(ClientData data) {
-		super(data);
+		this.data = data;
 	}
 
 	@Override

@@ -1,11 +1,11 @@
 package core.player;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
-
-import javax.swing.plaf.basic.BasicSliderUI.ActionScroller;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
@@ -17,34 +17,28 @@ import core.node.ByteSerializable;
 import share.Direction;
 import share.action.ActionMessage;
 import share.action.ActionVisitor;
-import share.action.BasicActionVisitor;
-import share.action.PlayerMoves;
 
 public class Client {
     private static final String EXCHANGE_NAME = "game_exchange";
     
     private ClientData data;
-    private ActionVisitor actionVisitor;
+    /**
+     * Synchronized observable set: set of ActionVisitor instances that will be notified when ActionMessages are received
+     * - "Synchronized" because multiple thread will access the set
+     * - "Set" because we want to ensure there are no duplicate observers
+     */
+    private Set<ActionVisitor> actionVisitors;
 
 	Channel channel;
 	
-	public Client(String playerName, String nodeName, String actionVisitorClassName) {
+	public Client(String playerName, String nodeName) {
 		this.data = new ClientData(new Player(), nodeName);
 		this.data.player.setName(playerName);
-		
-		
-		try {
-			Class<?> actionVisitorClass = Class.forName(actionVisitorClassName);
-			Constructor<?> actionVisitorConstructor = actionVisitorClass.getConstructor(ClientData.class);
-			this.actionVisitor = (ActionVisitor) actionVisitorConstructor.newInstance(this.data);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			
-			// If the class invocation fails, instantiate the basic visitor
-			this.actionVisitor = new BasicActionVisitor(this.data);
-		}
-		
+        
+        this.actionVisitors = Collections.synchronizedSet(new HashSet<ActionVisitor>());
+	}
+	
+	public void start () {		
 		ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
         Connection connection;
@@ -110,7 +104,7 @@ public class Client {
 	         */
 	        DeliverCallback deliverCallbackPlayer = (consumerTag, delivery) -> {
 	        	ActionMessage actionMessage = (ActionMessage) ByteSerializable.fromBytes(delivery.getBody());
-	        	actionMessage.accept(this.actionVisitor);
+	        	this.notifyActionVisitors(actionMessage);
 	        };
 	        channel.basicConsume(queueNamePlayer, true, deliverCallbackPlayer, consumerTag -> {});
 		}
@@ -118,6 +112,39 @@ public class Client {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Add an observer.
+	 * @param actionVisitor
+	 */
+	public void addActionVisitorObservable (ActionVisitor actionVisitor) {
+		this.actionVisitors.add(actionVisitor);
+	}
+	
+	/**
+	 * Remove the observer "actionVisitor".
+	 * @param actionVisitor
+	 */
+	public void removeActionVisitorObservable (ActionVisitor actionVisitor) {
+		this.actionVisitors.remove(actionVisitor);
+	}
+	
+	/**
+	 * Following the Observable pattern, "notify" all the ActionVisitor observers.
+	 * In other words, call the "accept" method on actionMessage for all the visitors (= observers).
+	 * @param actionMessage
+	 */
+	private void notifyActionVisitors (ActionMessage actionMessage) {
+		for (ActionVisitor actionVisitor: this.actionVisitors) {
+			synchronized (this.data) {
+				actionMessage.accept(actionVisitor);
+			}
+		}
+	}
+	
+	public ClientData getClientData () {
+		return this.data;
 	}
 
 }
