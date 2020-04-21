@@ -1,6 +1,8 @@
 package core.logger;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
@@ -8,17 +10,24 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
+import core.TimeoutSetting;
 import core.node.ByteSerializable;
-import share.action.ActionMessage;
 
+/**
+ * Logs in the standard output the messages received from the NodeLogger instances.
+ */
 public class Logger {
 	private static final String EXCHANGE_NAME = "game_exchange";
-	private static final String LOGGER_QUEUE_NAME = "logger";
+	public static final String LOGGER_QUEUE_NAME = "logger";
 
 	private Channel channel;
 
 	public static void main(String[] args) {
 		new Logger();
+		
+		CompletableFuture.delayedExecutor(TimeoutSetting.TIMEOUT, TimeUnit.SECONDS).execute(() -> {
+			System.exit(0);
+		});
 	}
 
 	public Logger() {

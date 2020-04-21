@@ -55,6 +55,8 @@ public class Client {
 	        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
 	        
 	        this.initPlayerQueue();
+	        System.out.println("Process start");
+	        System.out.println("---------- Send join to Node A");
 	        this.channel.basicPublish(EXCHANGE_NAME, this.data.nodeName + "_join", null, ByteSerializable.getBytes(this.data.player));
 	        try {
 				Thread.sleep(5000);
@@ -63,6 +65,7 @@ public class Client {
 				e.printStackTrace();
 			}
 	        System.out.println();
+	        System.out.println("---------- Send move (to Node B)");
 	        this.channel.basicPublish(EXCHANGE_NAME, this.data.nodeName + "_move", null, ByteSerializable.getBytes(new Direction(this.data.player, 1, 0)));
 	        try {
 				Thread.sleep(5000);
@@ -71,6 +74,7 @@ public class Client {
 				e.printStackTrace();
 			}
 	        System.out.println();
+	        System.out.println("---------- Send move (to Node A)");
 	        this.channel.basicPublish(EXCHANGE_NAME, this.data.nodeName + "_move", null, ByteSerializable.getBytes(new Direction(this.data.player, 1, 0)));
 	        
 	        try {
@@ -80,6 +84,7 @@ public class Client {
 				e.printStackTrace();
 			}
 	        System.out.println();
+	        System.out.println("---------- Send move (to Node B)");
 	        this.channel.basicPublish(EXCHANGE_NAME, this.data.nodeName + "_move", null, ByteSerializable.getBytes(new Direction(this.data.player, 1, 0)));
 		}
 		catch (IOException e) {

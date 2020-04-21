@@ -1,6 +1,7 @@
 package core.player;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Player implements Serializable {
 	private String id;
@@ -21,8 +22,22 @@ public class Player implements Serializable {
 	protected void setName (String name) {
 		this.name = name;
 	}
+	
+	@Override
+	public String toString () {
+		return "[" + this.id + " - " + this.name + "]";
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this.getClass().equals(obj.getClass())) {
+			return this.hashCode() == obj.hashCode();
+		}
+		return false;
+	}
 
-	public boolean equals (Player player) {
-		return this.id.equals(player.getId());
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }
