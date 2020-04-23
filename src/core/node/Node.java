@@ -123,7 +123,7 @@ public class Node {
 
 	/**
 	 * When the player joins the game for the first time <=> When the player logs in
-	 * @param client
+	 * @param player
 	 */
 	public void initialJoin (Player player) {
 		this.players_list.add(player);

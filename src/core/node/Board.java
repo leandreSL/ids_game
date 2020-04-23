@@ -21,6 +21,8 @@ public class Board {
 	 */
 	public boolean move (Tile source, int horizontalDirection, int verticalDirection) {
 		int new_coord;
+
+		// move in vertical direction
 		if (horizontalDirection == 0) {
 			new_coord = source.getY() + verticalDirection;
 			
@@ -28,6 +30,7 @@ public class Board {
 			
 			this.tiles[source.getX()][new_coord].setTopic(source.getTopic());
 		}
+		// move in horizontal direction
 		else {
 			new_coord = source.getX() + horizontalDirection;
 			
@@ -35,7 +38,8 @@ public class Board {
 			
 			this.tiles[new_coord][source.getY()].setTopic(source.getTopic());
 		}
-		
+
+		//reset the previous tile
 		source.setTopic(null);
 		return true;
 	}

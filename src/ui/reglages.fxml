@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.ReglageController">
+   <center>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Z : Avancer" />
+            <Label layoutX="273.0" layoutY="97.0" text="Q : Aller à gauche" />
+            <Label layoutX="273.0" layoutY="120.0" text="S : Reculer" />
+            <Label layoutX="273.0" layoutY="143.0" text="D : Aller à droite" />
+            <Button fx:id="retour" mnemonicParsing="false" text="Retour" />
+         </children>
+      </VBox>
+   </center>
+   <top>
+      <Label text="Game" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="25.0" />
+         </font>
+         <BorderPane.margin>
+            <Insets top="50.0" />
+         </BorderPane.margin>
+      </Label>
+   </top>
+</BorderPane>
