@@ -1,6 +1,6 @@
 package share.action;
 
-import core.player.Player;
+import share.Player;
 
 public class ChangeZone extends ActionMessage {
 	private static final long serialVersionUID = 1L;

@@ -12,7 +12,6 @@ public class ClientMain {
 		// args[0] : player name
 		// args[1] : destination zone
 		Client client = new Client(args[0], args[1]);
-		client.start();
 		
 		CompletableFuture.delayedExecutor(TimeoutSetting.TIMEOUT, TimeUnit.SECONDS).execute(() -> {
 			System.exit(0);

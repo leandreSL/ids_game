@@ -11,8 +11,8 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
 import core.node.board.Board;
-import core.player.Player;
 import share.Direction;
+import share.Player;
 import share.action.ActionMessage;
 import share.action.ChangeZone;
 import share.action.PlayerJoins;
@@ -31,7 +31,7 @@ public class Node {
 	NodeName nodeName;
 	String stringNodeName;
 	Board board;
-	ArrayList<Player> players_list;
+	ArrayList<PlayerGameData> players_list;
 	
 	Channel channel;
 	
@@ -59,7 +59,7 @@ public class Node {
 		this.neighbourNodesName = neighbours_node_name;
 		this.board = new Board(BOARD_SIZE[0], BOARD_SIZE[0]);
 
-        this.players_list = new ArrayList<Player>();
+        this.players_list = new ArrayList<>();
 
 		ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
@@ -74,7 +74,8 @@ public class Node {
 	         * Allows the player to join the node (log in the node)
 	         * Allows the player to move on the board
 	         */
-	        this.initJoinQueue();
+	        this.initInitialJoinQueue();
+	        this.initReceivePlayerChangeNodeQueue();
 	        this.initMoveQueue();
 		}
 		catch (IOException e) {
@@ -88,9 +89,9 @@ public class Node {
 	}
 
 	/**
-	 * For when a player joins the zone
+	 * For when a player joins the game
 	 */
-	public void initJoinQueue () {
+	public void initInitialJoinQueue () {
         try {
         	// Create the queue and bind it to the topic 
             String queueNameJoin = channel.queueDeclare().getQueue();
@@ -101,7 +102,7 @@ public class Node {
 	         */
 	        DeliverCallback deliverCallbackJoin = (consumerTag, delivery) -> {
 	        	Player player = (Player) ByteSerializable.fromBytes(delivery.getBody());
-	        	this.join(player);
+	        	this.initialJoin(player);
 	        };
 	        channel.basicConsume(queueNameJoin, true, deliverCallbackJoin, consumerTag -> {});
 		}
@@ -136,14 +137,47 @@ public class Node {
 		}
         
 	}
+	
+	/**
+	 * When a node receives a player from an other node.
+	 */
+	private void initReceivePlayerChangeNodeQueue() {
+		try {
+        	// Create the queue and bind it to the topic
+			String queueName = channel.queueDeclare().getQueue();
+	        channel.queueBind(queueName, EXCHANGE_NAME, this.nodeName + "_change_node");
+	        
+	        /*
+	         * Subscribe to the topic "[nodeName]_change_node"
+	         */
+	        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+	        	PlayerGameData player = (PlayerGameData) ByteSerializable.fromBytes(delivery.getBody());
+	        	this.receivePlayerChangeNode(player);
+	        };
+	        channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+	}
 
 	/**
-	 * When the player joins the zone
-	 * @param client
+	 * When the player joins the game
+	 * @param player
 	 */
-	protected void join (Player player) {
-		this.players_list.add(player);
-		
+	protected void initialJoin (Player player) {
+		this.players_list.add(new PlayerGameData(player));
+		this.join(player);
+	}
+
+
+	protected void receivePlayerChangeNode(PlayerGameData playerGameData) {
+		this.players_list.add(playerGameData);
+		this.join(playerGameData.getPlayer());
+	}
+	
+	private void join (Player player) {
 		/*
 		 * TODO :
 		 * placer le joueur sur le board
@@ -184,45 +218,52 @@ public class Node {
 			
 			if (this.nodeName == NodeName.A) {
 				if (direction.getHorizontalDirection() != 0) {
-					this.changeNode(sourcePlayer, "B");
+					this.sendPlayerChangeNode(sourcePlayer, "B");
 				}
 				else {
-					this.changeNode(sourcePlayer, "D");
+					this.sendPlayerChangeNode(sourcePlayer, "D");
 				}
 			}
 			else if (this.nodeName == NodeName.B) {
 				if (direction.getHorizontalDirection() != 0) {
-					this.changeNode(sourcePlayer, "A");
+					this.sendPlayerChangeNode(sourcePlayer, "A");
 				}
 				else {
-					this.changeNode(sourcePlayer, "C");
+					this.sendPlayerChangeNode(sourcePlayer, "C");
 				}
 			}
 			else if (this.nodeName == NodeName.C) {
 				if (direction.getHorizontalDirection() != 0) {
-					this.changeNode(sourcePlayer, "D");
+					this.sendPlayerChangeNode(sourcePlayer, "D");
 				}
 				else {
-					this.changeNode(sourcePlayer, "B");
+					this.sendPlayerChangeNode(sourcePlayer, "B");
 				}
 			}
 			else if (this.nodeName == NodeName.D) {
 				if (direction.getHorizontalDirection() != 0) {
-					this.changeNode(sourcePlayer, "C");
+					this.sendPlayerChangeNode(sourcePlayer, "C");
 				}
 				else {
-					this.changeNode(sourcePlayer, "A");
+					this.sendPlayerChangeNode(sourcePlayer, "A");
 				}
 			}
 		}
 	}
 	
-	protected void changeNode (Player player, String destinationNode) {
-		this.players_list.remove(player);
+	protected void sendPlayerChangeNode (Player player, String destinationNode) {
+		PlayerGameData playerGameData = null;
+		
+		for (int i = 0; i < this.players_list.size(); i++) {
+			if (this.players_list.get(i).getPlayer().equals(player)) {
+				playerGameData = this.players_list.remove(i);
+				break;
+			}
+		}
 		
 		try {
 			// Make the player join the new node
-			channel.basicPublish(EXCHANGE_NAME, destinationNode + "_join", null, ByteSerializable.getBytes(player));
+			channel.basicPublish(EXCHANGE_NAME, destinationNode + "_change_node", null, ByteSerializable.getBytes(playerGameData));
 
 			// Send the new queue node id to the player
 			ActionMessage action = new ChangeZone(player, destinationNode);
@@ -239,9 +280,9 @@ public class Node {
 	private void broadcastPlayers (ActionMessage action) {
 		byte[] actionBytes = ByteSerializable.getBytes(action);
 		
-		for (Player player: this.players_list) {
+		for (PlayerGameData playerGameData: this.players_list) {
 			try {
-				channel.basicPublish(EXCHANGE_NAME, player.getId(), null, actionBytes);
+				channel.basicPublish(EXCHANGE_NAME, playerGameData.getId(), null, actionBytes);
 			} catch (IOException e) {
 				// TODO 
 				e.printStackTrace();
@@ -255,11 +296,11 @@ public class Node {
 	private void broadcastPlayers (ActionMessage action, Player excludedPlayer) {
 		byte[] actionBytes = ByteSerializable.getBytes(action);
 		
-		for (Player player: this.players_list) {
-			if (player.equals(excludedPlayer)) continue;
+		for (PlayerGameData playerGameData: this.players_list) {
+			if (playerGameData.getPlayer().equals(excludedPlayer)) continue;
 			
 			try {
-				channel.basicPublish(EXCHANGE_NAME, player.getId(), null, actionBytes);
+				channel.basicPublish(EXCHANGE_NAME, playerGameData.getId(), null, actionBytes);
 			} catch (IOException e) {
 				// TODO 
 				e.printStackTrace();

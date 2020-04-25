@@ -2,10 +2,9 @@ package share;
 
 import java.io.Serializable;
 
-import core.player.Player;
-import share.action.ActionMessage;
-
 public class Direction implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	Player player;
 	
 	int horizontalDirection;

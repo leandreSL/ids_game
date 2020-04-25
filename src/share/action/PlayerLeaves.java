@@ -1,7 +1,7 @@
 package share.action;
 
 import core.player.ClientData;
-import core.player.Player;
+import share.Player;
 
 public class PlayerLeaves extends ActionMessage {
 	private static final long serialVersionUID = 1L;

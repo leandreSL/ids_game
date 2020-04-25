@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import core.logger.Logger;
-import core.player.Player;
+import share.Player;
 
 public class NodeLogger extends Node {	
 	DateTimeFormatter timeFormatter;
@@ -23,8 +23,9 @@ public class NodeLogger extends Node {
 		}
 	}
 
-	protected void join (Player player) {
-		super.join(player);
+	@Override
+	protected void initialJoin (Player player) {
+		super.initialJoin(player);
 		
 		String message = player + " joins zone " + nodeName;
 		
@@ -32,8 +33,19 @@ public class NodeLogger extends Node {
 		this.log(message);
 	}
 
-	protected void changeNode (Player player, String destinationNode) {
-		super.changeNode(player, destinationNode);
+	@Override
+	protected void receivePlayerChangeNode (PlayerGameData playerGameData) {
+		super.receivePlayerChangeNode(playerGameData);
+		
+		String message = playerGameData.getPlayer() + " joins zone " + nodeName;
+		
+		System.out.println(message);
+		this.log(message);
+	}
+
+	@Override
+	protected void sendPlayerChangeNode (Player player, String destinationNode) {
+		super.sendPlayerChangeNode(player, destinationNode);
 		
 		String message = player + " quits zone " + nodeName + " for zone " + destinationNode;
 		

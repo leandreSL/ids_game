@@ -2,7 +2,7 @@ package share.action;
 
 import java.io.Serializable;
 
-import core.player.Player;
+import share.Player;
 
 public abstract class ActionMessage implements Serializable {
 	private static final long serialVersionUID = 1L;

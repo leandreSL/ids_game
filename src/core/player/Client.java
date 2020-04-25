@@ -15,6 +15,7 @@ import com.rabbitmq.client.DeliverCallback;
 
 import core.node.ByteSerializable;
 import share.Direction;
+import share.Player;
 import share.action.ActionMessage;
 import share.action.ActionVisitor;
 import share.action.BasicActionVisitor;
@@ -22,7 +23,7 @@ import share.action.BasicActionVisitor;
 public class Client {
 	private static final String EXCHANGE_NAME = "game_exchange";
 
-	private ClientData data;
+	final private ClientData data;
 	private ActionVisitor coreActionVisitor;
 	/**
 	 * Synchronized observable set: set of ActionVisitor instances that will be
@@ -35,14 +36,16 @@ public class Client {
 	Channel channel;
 
 	public Client(String playerName, String nodeName) {
-		this.data = new ClientData(new Player(), nodeName);
-		this.data.player.setName(playerName);
-
+		String playerId = this.initNetworkMessaging();
+		this.data = new ClientData(new Player(playerId, playerName), nodeName);
+		
 		this.coreActionVisitor = new BasicActionVisitor(data);
 		this.actionVisitorsObservers = Collections.synchronizedSet(new HashSet<ActionVisitor>());
+		
+		tempScenario();
 	}
 
-	public void start() {
+	private String initNetworkMessaging () {
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
 		Connection connection;
@@ -52,7 +55,20 @@ public class Client {
 			channel = connection.createChannel();
 			channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
 
-			this.initPlayerQueue();
+			return this.initPlayerQueue();
+		} catch (IOException e) {
+			// TODO
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			// TODO
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	private void tempScenario () {
+		try {
 			System.out.println("Process start");
 			System.out.println("---------- Send join to Node A");
 			this.channel.basicPublish(EXCHANGE_NAME, this.data.nodeName + "_join", null,
@@ -91,19 +107,14 @@ public class Client {
 		} catch (IOException e) {
 			// TODO
 			e.printStackTrace();
-		} catch (TimeoutException e) {
-			// TODO
-			e.printStackTrace();
 		}
 	}
 
-	private void initPlayerQueue() {
+	private String initPlayerQueue() {
 		try {
 			// Create the queue and bind it to the topic
 			String queueNamePlayer = channel.queueDeclare().getQueue();
 			channel.queueBind(queueNamePlayer, EXCHANGE_NAME, queueNamePlayer);
-
-			this.data.player.setId(queueNamePlayer);
 
 			/*
 			 * Subscribe to the topic "[queueNamePlayer]"
@@ -112,12 +123,15 @@ public class Client {
 				ActionMessage actionMessage = (ActionMessage) ByteSerializable.fromBytes(delivery.getBody());
 				this.notifyActionVisitors(actionMessage);
 			};
-			channel.basicConsume(queueNamePlayer, true, deliverCallbackPlayer, consumerTag -> {
-			});
+			channel.basicConsume(queueNamePlayer, true, deliverCallbackPlayer, consumerTag -> {});
+			
+			return queueNamePlayer;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return null;
 	}
 
 	/**

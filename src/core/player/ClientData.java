@@ -1,5 +1,7 @@
 package core.player;
 
+import share.Player;
+
 public class ClientData {
 	Player player;
 	String nodeName;

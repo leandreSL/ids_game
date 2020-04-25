@@ -1,4 +1,4 @@
-package core.player;
+package share;
 
 import java.io.Serializable;
 import java.util.Objects;
