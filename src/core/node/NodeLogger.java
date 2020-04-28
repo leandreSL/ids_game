@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import core.logger.Logger;
+import core.network.RabbitWrapper;
 import share.Player;
 
 public class NodeLogger extends Node {	
@@ -17,8 +18,9 @@ public class NodeLogger extends Node {
 
 	private void log (String message) {
 		try {
-			channel.basicPublish(EXCHANGE_NAME, Logger.LOGGER_QUEUE_NAME, null, ByteSerializable.getBytes(LocalTime.now().format(timeFormatter) + " - " + nodeName + ": " + message));
-		} catch (IOException e) {
+			network.publish(Logger.LOGGER_QUEUE_NAME, ByteSerializable.getBytes(LocalTime.now().format(timeFormatter) + " - " + nodeName + ": " + message));
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

@@ -5,14 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 
-import com.rabbitmq.client.BuiltinExchangeType;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
 
+import core.network.RabbitWrapper;
 import core.node.board.Board;
 import core.node.board.Tile;
 import share.Direction;
@@ -26,10 +21,10 @@ import share.action.PlayerMoves;
 
 public class Node {
 	private static final int[] BOARD_SIZE = {7, 7};
-    protected static final String EXCHANGE_NAME = "game_exchange";
-    
 
 	private enum NodeName {A, B, C, D};
+	
+	protected RabbitWrapper network;
 	
 	String[] neighbourNodesName;
 	NodeName nodeName;
@@ -38,7 +33,6 @@ public class Node {
 	List<Player> players_list;
 	Map<Player, PlayerGameData> players_data;
 	
-	Channel channel;
 	
 	public Node (String name, String[] neighbours_node_name) {
 		NodeName nodeName = null;
@@ -66,108 +60,38 @@ public class Node {
 
         this.players_list = new ArrayList<>();
         this.players_data = new HashMap<>();
+        this.network = new RabbitWrapper();
 
-		ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        Connection connection;
-        
-		try {
-			connection = factory.newConnection();
-	        channel = connection.createChannel();
-	        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
-	        
-	        /*
-	         * Allows the player to join the node (log in the node)
-	         * Allows the player to move on the board
-	         */
-	        this.initInitialJoinQueue();
-	        this.initReceivePlayerChangeNodeQueue();
-	        this.initMoveQueue();
-		}
-		catch (IOException e) {
-			// TODO
-			e.printStackTrace();
-		}
-		catch (TimeoutException e) {
-			// TODO
-			e.printStackTrace();
-		}
-	}
 
-	/**
-	 * For when a player joins the game
-	 */
-	public void initInitialJoinQueue () {
-        try {
-        	// Create the queue and bind it to the topic 
-            String queueNameJoin = channel.queueDeclare().getQueue();
-			channel.queueBind(queueNameJoin, EXCHANGE_NAME, this.nodeName + "_join");
-			
-	        /*
-	         * Subscribe to the topic "[nodeName]_join"
-	         */
-	        DeliverCallback deliverCallbackJoin = (consumerTag, delivery) -> {
-	        	Player player = (Player) ByteSerializable.fromBytes(delivery.getBody());
-	        	this.initialJoin(player);
-	        };
-	        channel.basicConsume(queueNameJoin, true, deliverCallbackJoin, consumerTag -> {});
-		}
-        catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
+		/*
+		 * Allows the player to join the node (log in the node) Allows the player to
+		 * move on the board
+		 */
+        this.initQueues();
 	}
 	
-	/**
-	 * For when the player wants to move
-	 */
-	private void initMoveQueue() {
-		try {
-        	// Create the queue and bind it to the topic
-			String queueNameMove = channel.queueDeclare().getQueue();
-	        channel.queueBind(queueNameMove, EXCHANGE_NAME, this.nodeName + "_move");
-	        
-	        /*
-	         * Subscribe to the topic "[nodeName]_move"
-	         */
-	        DeliverCallback deliverCallbackMove = (consumerTag, delivery) -> {
-	        	Direction direction = (Direction) ByteSerializable.fromBytes(delivery.getBody());
-	        	System.out.println(direction.getPlayer().getName() + " move");
-	        	this.move(direction);
-	        };
-	        channel.basicConsume(queueNameMove, true, deliverCallbackMove, consumerTag -> {});
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	private void initQueues () {
+		// For when a player joins the game
+        network.createQueueAndListen(this.nodeName + "_join", (consumerTag, delivery) -> {
+        	Player player = (Player) ByteSerializable.fromBytes(delivery.getBody());
+        	this.initialJoin(player);
+        });
         
-	}
-	
-	/**
-	 * When a node receives a player from an other node.
-	 */
-	private void initReceivePlayerChangeNodeQueue() {
-		try {
-        	// Create the queue and bind it to the topic
-			String queueName = channel.queueDeclare().getQueue();
-	        channel.queueBind(queueName, EXCHANGE_NAME, this.nodeName + "_change_node");
-	        
-	        /*
-	         * Subscribe to the topic "[nodeName]_change_node"
-	         */
-	        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-	        	PlayerGameData player = (PlayerGameData) ByteSerializable.fromBytes(delivery.getBody());
-	        	this.receivePlayerChangeNode(player);
-	        };
-	        channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {});
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        // For when the player wants to move
+        network.createQueueAndListen(this.nodeName + "_move", (consumerTag, delivery) -> {
+        	Direction direction = (Direction) ByteSerializable.fromBytes(delivery.getBody());
+        	System.out.println(direction.getPlayer().getName() + " move");
+        	this.move(direction);
+        });
         
+        // When a node receives a player from an other node.
+        network.createQueueAndListen(this.nodeName + "_change_node", (consumerTag, delivery) -> {
+        	PlayerGameData player = (PlayerGameData) ByteSerializable.fromBytes(delivery.getBody());
+        	this.receivePlayerChangeNode(player);
+        });
 	}
 
+	
 	/**
 	 * When the player joins the game
 	 * @param player
@@ -196,16 +120,11 @@ public class Node {
 	}
 	
 	private void move (Direction direction) {
-		System.out.println("MOVE ? FDP");
 		Player player = direction.getPlayer();
 		
 		if (player == null || !this.players_list.contains(player) || !direction.isValid()) {
 			// TODO : si le player n'est pas dans la zone (hackeur méchant pas gentil)
 			// ou si la direction n'est pas valide
-			System.out.println(player);
-			System.out.println(this.players_list.contains(player));
-			System.out.println(!direction.isValid());
-			System.out.println();
 			return;
 		}
     	
@@ -281,11 +200,11 @@ public class Node {
 		
 		try {
 			// Make the player join the new node
-			channel.basicPublish(EXCHANGE_NAME, destinationNode + "_change_node", null, ByteSerializable.getBytes(playerGameData));
+			network.publish(destinationNode + "_change_node", ByteSerializable.getBytes(playerGameData));
 
 			// Send the new queue node id to the player
 			ActionMessage action = new ChangeZone(player, destinationNode);
-			channel.basicPublish(EXCHANGE_NAME, player.getId(), null, ByteSerializable.getBytes(action));
+			network.publish(player.getId(), ByteSerializable.getBytes(action));
 		} catch (IOException e) {
 			// TODOs
 			e.printStackTrace();
@@ -300,8 +219,9 @@ public class Node {
 		
 		for (Player player: this.players_list) {
 			try {
-				channel.basicPublish(EXCHANGE_NAME, player.getId(), null, actionBytes);
-			} catch (IOException e) {
+				network.publish(player.getId(), actionBytes);
+			}
+			catch (IOException e) {
 				// TODO 
 				e.printStackTrace();
 			}
@@ -318,8 +238,9 @@ public class Node {
 			if (player.equals(excludedPlayer)) continue;
 			
 			try {
-				channel.basicPublish(EXCHANGE_NAME, player.getId(), null, actionBytes);
-			} catch (IOException e) {
+				network.publish(player.getId(), actionBytes);
+			}
+			catch (IOException e) {
 				// TODO 
 				e.printStackTrace();
 			}
