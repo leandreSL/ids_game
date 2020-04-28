@@ -16,6 +16,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.util.Random;
+
 
 public class PlateauController {
 
@@ -29,9 +31,9 @@ public class PlateauController {
     Scene scene;
     String node ="";
 
-    int playerX = 5;
-    int playerY = 2;
 
+    int playerX;
+    int playerY;
 
     String nextNode1;
     String nextNode2;
@@ -51,6 +53,9 @@ public class PlateauController {
     private void initialize() {
         Platform.runLater(() -> {
             initPlateau();
+            Random random = new Random();
+            playerX = random.nextInt(6);
+            playerY = random.nextInt(6);
             movePlayer(playerX,playerY,grille);
         });
 
@@ -100,6 +105,7 @@ public class PlateauController {
     public void mainListener(Stage stage, String nodeN) {
         scene = stage.getScene();
         this.node = nodeN;
+        this.nodeName.setText(nodeN);
 
         adjustNodes();
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {

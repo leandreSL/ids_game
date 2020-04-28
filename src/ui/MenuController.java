@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Random;
 
 public class MenuController {
 
@@ -24,6 +25,7 @@ public class MenuController {
     @FXML
     BorderPane rootPane;
 
+    final String[] nodes_names = {"nodeA", "nodeB", "nodeC", "nodeD"};
 
     /**
      * The constructor.
@@ -51,7 +53,9 @@ public class MenuController {
                 Stage stage = (Stage) rootPane.getScene().getWindow();
                 stage.setScene(new Scene(pane));
                 PlateauController controller = (PlateauController)loader.getController();
-                controller.mainListener(stage,"nodeD");
+                Random random = new Random();
+                int index = random.nextInt(nodes_names.length);
+                controller.mainListener(stage,nodes_names[index]);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
