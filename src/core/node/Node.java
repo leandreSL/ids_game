@@ -2,6 +2,9 @@ package core.node;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import com.rabbitmq.client.BuiltinExchangeType;
@@ -11,6 +14,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
 import core.node.board.Board;
+import core.node.board.Tile;
 import share.Direction;
 import share.Player;
 import share.action.ActionMessage;
@@ -31,7 +35,8 @@ public class Node {
 	NodeName nodeName;
 	String stringNodeName;
 	Board board;
-	ArrayList<PlayerGameData> players_list;
+	List<Player> players_list;
+	Map<Player, PlayerGameData> players_data;
 	
 	Channel channel;
 	
@@ -60,6 +65,7 @@ public class Node {
 		this.board = new Board(BOARD_SIZE[0], BOARD_SIZE[0]);
 
         this.players_list = new ArrayList<>();
+        this.players_data = new HashMap<>();
 
 		ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
@@ -167,31 +173,49 @@ public class Node {
 	 * @param player
 	 */
 	protected void initialJoin (Player player) {
-		this.players_list.add(new PlayerGameData(player));
+		board.addPlayer(player);
+		this.players_list.add(player);
+		this.players_data.put(player, new PlayerGameData(player));
 		this.join(player);
 	}
 
 
 	protected void receivePlayerChangeNode(PlayerGameData playerGameData) {
-		this.players_list.add(playerGameData);
-		this.join(playerGameData.getPlayer());
+		Player player = playerGameData.getPlayer();
+
+		// TODO : stratégie de placement différent quand le joueur provient d'un noeud voisin ?
+		board.addPlayer(player);
+		this.players_list.add(player);
+		this.players_data.put(player, playerGameData);
+		this.join(player);
 	}
 	
 	private void join (Player player) {
-		/*
-		 * TODO :
-		 * placer le joueur sur le board
-		*/
 		ActionMessage action = new PlayerJoins(player);
 		this.broadcastPlayers(action);
 	}
 	
 	private void move (Direction direction) {
-		Player sourcePlayer = direction.getPlayer();
+		System.out.println("MOVE ? FDP");
+		Player player = direction.getPlayer();
 		
-		if (!this.players_list.contains(sourcePlayer)) {
+		if (player == null || !this.players_list.contains(player) || !direction.isValid()) {
 			// TODO : si le player n'est pas dans la zone (hackeur méchant pas gentil)
+			// ou si la direction n'est pas valide
+			System.out.println(player);
+			System.out.println(this.players_list.contains(player));
+			System.out.println(!direction.isValid());
+			System.out.println();
+			return;
 		}
+    	
+		// check the tile is available, i.e that this is a valid displacement, that the tile is empty
+		Tile destination = board.getDestinationTile(player, direction);
+		if (destination == null) return;
+
+		if (!board.isTileAvailable(destination)) return;
+
+		//ActionMessage action = board.moveToTileAndGetActionMessage();
 		
 		/*
 		 * TODO : faire bouger le player sur le board (selon règles / contraintes)
@@ -210,56 +234,50 @@ public class Node {
 		// TODO : clean ce code dégueulasse à base de ifs
 		// Si déplacement = changement de noeud
 		if (true) {
-			ActionMessage action = new PlayerLeaves(sourcePlayer);
-			this.broadcastPlayers(action, sourcePlayer);
+			ActionMessage action = new PlayerLeaves(player);
+			this.broadcastPlayers(action, player);
 			
 			// Remove the player from the board
-			this.board.removePlayer(sourcePlayer.getId());
+			this.board.removePlayer(player.getId());
 			
 			if (this.nodeName == NodeName.A) {
 				if (direction.getHorizontalDirection() != 0) {
-					this.sendPlayerChangeNode(sourcePlayer, "B");
+					this.makePlayerChangeNode(player, "B");
 				}
 				else {
-					this.sendPlayerChangeNode(sourcePlayer, "D");
+					this.makePlayerChangeNode(player, "D");
 				}
 			}
 			else if (this.nodeName == NodeName.B) {
 				if (direction.getHorizontalDirection() != 0) {
-					this.sendPlayerChangeNode(sourcePlayer, "A");
+					this.makePlayerChangeNode(player, "A");
 				}
 				else {
-					this.sendPlayerChangeNode(sourcePlayer, "C");
+					this.makePlayerChangeNode(player, "C");
 				}
 			}
 			else if (this.nodeName == NodeName.C) {
 				if (direction.getHorizontalDirection() != 0) {
-					this.sendPlayerChangeNode(sourcePlayer, "D");
+					this.makePlayerChangeNode(player, "D");
 				}
 				else {
-					this.sendPlayerChangeNode(sourcePlayer, "B");
+					this.makePlayerChangeNode(player, "B");
 				}
 			}
 			else if (this.nodeName == NodeName.D) {
 				if (direction.getHorizontalDirection() != 0) {
-					this.sendPlayerChangeNode(sourcePlayer, "C");
+					this.makePlayerChangeNode(player, "C");
 				}
 				else {
-					this.sendPlayerChangeNode(sourcePlayer, "A");
+					this.makePlayerChangeNode(player, "A");
 				}
 			}
 		}
 	}
 	
-	protected void sendPlayerChangeNode (Player player, String destinationNode) {
-		PlayerGameData playerGameData = null;
-		
-		for (int i = 0; i < this.players_list.size(); i++) {
-			if (this.players_list.get(i).getPlayer().equals(player)) {
-				playerGameData = this.players_list.remove(i);
-				break;
-			}
-		}
+	protected void makePlayerChangeNode (Player player, String destinationNode) {
+		this.players_list.remove(player);	
+		PlayerGameData playerGameData = this.players_data.get(player);
 		
 		try {
 			// Make the player join the new node
@@ -280,9 +298,9 @@ public class Node {
 	private void broadcastPlayers (ActionMessage action) {
 		byte[] actionBytes = ByteSerializable.getBytes(action);
 		
-		for (PlayerGameData playerGameData: this.players_list) {
+		for (Player player: this.players_list) {
 			try {
-				channel.basicPublish(EXCHANGE_NAME, playerGameData.getId(), null, actionBytes);
+				channel.basicPublish(EXCHANGE_NAME, player.getId(), null, actionBytes);
 			} catch (IOException e) {
 				// TODO 
 				e.printStackTrace();
@@ -296,11 +314,11 @@ public class Node {
 	private void broadcastPlayers (ActionMessage action, Player excludedPlayer) {
 		byte[] actionBytes = ByteSerializable.getBytes(action);
 		
-		for (PlayerGameData playerGameData: this.players_list) {
-			if (playerGameData.getPlayer().equals(excludedPlayer)) continue;
+		for (Player player: this.players_list) {
+			if (player.equals(excludedPlayer)) continue;
 			
 			try {
-				channel.basicPublish(EXCHANGE_NAME, playerGameData.getId(), null, actionBytes);
+				channel.basicPublish(EXCHANGE_NAME, player.getId(), null, actionBytes);
 			} catch (IOException e) {
 				// TODO 
 				e.printStackTrace();

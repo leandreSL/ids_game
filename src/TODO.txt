@@ -1,0 +1,3 @@
+- Synchronisation côté Node
+	Client c'est fait, mais vérifier
+- Gérer les déconnexions

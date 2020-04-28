@@ -44,8 +44,8 @@ public class NodeLogger extends Node {
 	}
 
 	@Override
-	protected void sendPlayerChangeNode (Player player, String destinationNode) {
-		super.sendPlayerChangeNode(player, destinationNode);
+	protected void makePlayerChangeNode (Player player, String destinationNode) {
+		super.makePlayerChangeNode(player, destinationNode);
 		
 		String message = player + " quits zone " + nodeName + " for zone " + destinationNode;
 		

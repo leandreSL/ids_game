@@ -1,15 +1,19 @@
-package core.node;
+package core.node.board;
 
-public class Tile {
+public abstract class Tile {
 	protected int x;
 	protected int y;
-	/**
-	 * The topic is equal to the player ID or null if there is nothing on the tile
-	 */
-	protected String topic;
 	
-	public Tile (int x, int y, String topic) {
+	public Tile (int x, int y) {
 		this.x = x;
 		this.x = y;
 	}
+
+
+	/**
+	 * Returns true if the tile is available, i.e. the player can move on that Tile.
+	 * @param player
+	 * @return <strong>true</strong> if the tile is available, <strong>false</strong> otherwise.
+	 */
+	public abstract boolean isAvailable();
 }
