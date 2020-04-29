@@ -5,7 +5,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import core.logger.Logger;
-import core.network.RabbitWrapper;
+import core.node.board.TileChangeZone;
+import core.node.board.TileLand;
+import core.node.board.TileVisitor;
+import core.node.board.TileWall;
 import share.Player;
 
 public class NodeLogger extends Node {	
@@ -46,13 +49,34 @@ public class NodeLogger extends Node {
 	}
 
 	@Override
-	protected void makePlayerChangeNode (Player player, String destinationNode) {
-		super.makePlayerChangeNode(player, destinationNode);
-		
-		String message = player + " quits zone " + nodeName + " for zone " + destinationNode;
+	public void executeTileAction(TileLand tile, Player player) {
+		super.executeTileAction(tile, player);
+
+		String message = player + " moves to tile " + tile;
 		
 		System.out.println(message);
 		this.log(message);
+	}
+
+	@Override
+	public void executeTileAction(TileChangeZone tile, Player player) {
+		super.executeTileAction(tile, player);
+
+		String message = player + " quits zone " + nodeName + " for zone " + tile.getDestinationNode();
+		
+		System.out.println(message);
+		this.log(message);	
+	}
+
+	@Override
+	public void executeTileAction(TileWall tile, Player player) {
+		super.executeTileAction(tile, player);
+
+		String message = player + " tried to hit the wall " + tile + " !";
+		
+		System.out.println(message);
+		this.log(message);
+		
 	}
 
 }

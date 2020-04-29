@@ -2,8 +2,11 @@ package share.action;
 
 import share.Player;
 
+/**
+ * Received when the player changes zone.
+ */
+@SuppressWarnings("serial")
 public class ChangeZone extends ActionMessage {
-	private static final long serialVersionUID = 1L;
 	protected String nodeName;
 
 	public ChangeZone(Player source, String nodeName) {

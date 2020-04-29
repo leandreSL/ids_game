@@ -1,10 +1,12 @@
 package share.action;
 
-import core.player.ClientData;
 import share.Player;
 
+/**
+ * Received when an other player on the board left the zone.
+ */
+@SuppressWarnings("serial")
 public class PlayerLeaves extends ActionMessage {
-	private static final long serialVersionUID = 1L;
 
 	public PlayerLeaves(Player source) {
 		super(source);

@@ -1,6 +1,11 @@
 package core.node.board;
 
-public abstract class Tile {
+import java.io.Serializable;
+
+import share.Player;
+
+@SuppressWarnings("serial")
+public abstract class Tile implements Serializable {
 	protected int x;
 	protected int y;
 	
@@ -16,4 +21,17 @@ public abstract class Tile {
 	 * @return <strong>true</strong> if the tile is available, <strong>false</strong> otherwise.
 	 */
 	public abstract boolean isAvailable();
+	public abstract void accept(TileVisitor tileVisitor, Player player);
+	
+	public int getX () {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
+	
+	public String toString () {
+		return "[tile:" + x + "," + y + "]";
+	}
 }

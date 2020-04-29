@@ -1,7 +1,6 @@
 package core.player;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -80,7 +79,7 @@ public class Client {
 				e.printStackTrace();
 			}
 			System.out.println();
-			System.out.println("---------- Send move (to Node B)");
+			System.out.println("---------- Send move");
 			this.channel.basicPublish(EXCHANGE_NAME, this.data.nodeName + "_move", null,
 					ByteSerializable.getBytes(new Direction(this.data.player, 1, 0)));
 			try {
@@ -90,7 +89,7 @@ public class Client {
 				e.printStackTrace();
 			}
 			System.out.println();
-			System.out.println("---------- Send move (to Node A)");
+			System.out.println("---------- Send move");
 			this.channel.basicPublish(EXCHANGE_NAME, this.data.nodeName + "_move", null,
 					ByteSerializable.getBytes(new Direction(this.data.player, 1, 0)));
 
@@ -101,7 +100,7 @@ public class Client {
 				e.printStackTrace();
 			}
 			System.out.println();
-			System.out.println("---------- Send move (to Node B)");
+			System.out.println("---------- Send move");
 			this.channel.basicPublish(EXCHANGE_NAME, this.data.nodeName + "_move", null,
 					ByteSerializable.getBytes(new Direction(this.data.player, 1, 0)));
 		} catch (IOException e) {

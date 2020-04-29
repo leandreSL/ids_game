@@ -1,9 +1,14 @@
 package core.node.board;
 
-public class TileChangeZone extends Tile {
+import share.Player;
 
-	public TileChangeZone(int x, int y, String topic) {
+@SuppressWarnings("serial")
+public class TileChangeZone extends Tile {
+	String destinationNode;
+
+	public TileChangeZone (int x, int y, String destinationNode) {
 		super(x, y);
+		this.destinationNode = destinationNode;
 	}
 
 	@Override
@@ -11,4 +16,12 @@ public class TileChangeZone extends Tile {
 		return true;
 	}
 
+	@Override
+	public void accept (TileVisitor tileVisitor, Player player) {
+		tileVisitor.executeTileAction(this, player);		
+	}
+	
+	public String getDestinationNode() {
+		return destinationNode;
+	}
 }

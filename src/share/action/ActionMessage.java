@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 import share.Player;
 
+@SuppressWarnings("serial")
 public abstract class ActionMessage implements Serializable {
-	private static final long serialVersionUID = 1L;
 	
-	protected Player source;
+	private Player source;
 	
 	public ActionMessage(Player source) {
 		this.source = source;

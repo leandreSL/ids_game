@@ -26,13 +26,9 @@ public class BasicActionVisitor implements ActionVisitor {
 	}
 
 	@Override
-	public void visit (SayHello sayHelloMessage) {
-		System.out.println("SayHello");
-	}
-
-	@Override
 	public void visit (PlayerMoves playerMovesMessage) {
 		System.out.println("PlayerMoves");
+		System.out.println("Coords : " + playerMovesMessage.getDestinationTile());
 	}
 
 }

@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-import core.network.RabbitWrapper;
 import core.node.board.Board;
 import core.node.board.Tile;
+import core.node.board.TileChangeZone;
+import core.node.board.TileLand;
+import core.node.board.TileVisitor;
+import core.node.board.TileWall;
 import share.Direction;
 import share.Player;
 import share.action.ActionMessage;
@@ -19,7 +21,7 @@ import share.action.PlayerLeaves;
 import share.action.PlayerMoves;
 
 
-public class Node {
+public class Node implements TileVisitor {
 	private static final int[] BOARD_SIZE = {7, 7};
 
 	private enum NodeName {A, B, C, D};
@@ -73,21 +75,26 @@ public class Node {
 	private void initQueues () {
 		// For when a player joins the game
         network.createQueueAndListen(this.nodeName + "_join", (consumerTag, delivery) -> {
-        	Player player = (Player) ByteSerializable.fromBytes(delivery.getBody());
-        	this.initialJoin(player);
+            Player player = (Player) ByteSerializable.fromBytes(delivery.getBody());
+        	synchronized (this) {
+            	this.initialJoin(player);
+        	}
         });
         
         // For when the player wants to move
         network.createQueueAndListen(this.nodeName + "_move", (consumerTag, delivery) -> {
         	Direction direction = (Direction) ByteSerializable.fromBytes(delivery.getBody());
-        	System.out.println(direction.getPlayer().getName() + " move");
-        	this.move(direction);
+        	synchronized (this) {
+            	this.move(direction);
+        	}
         });
         
         // When a node receives a player from an other node.
         network.createQueueAndListen(this.nodeName + "_change_node", (consumerTag, delivery) -> {
-        	PlayerGameData player = (PlayerGameData) ByteSerializable.fromBytes(delivery.getBody());
-        	this.receivePlayerChangeNode(player);
+        	synchronized (this) {
+        		PlayerGameData player = (PlayerGameData) ByteSerializable.fromBytes(delivery.getBody());
+        		this.receivePlayerChangeNode(player);
+        	}
         });
 	}
 
@@ -129,90 +136,91 @@ public class Node {
 		}
     	
 		// check the tile is available, i.e that this is a valid displacement, that the tile is empty
-		Tile destination = board.getDestinationTile(player, direction);
-		if (destination == null) return;
+		Tile destinationTile = board.getDestinationTile(player, direction);
+		if (destinationTile == null) return;
 
-		if (!board.isTileAvailable(destination)) return;
+		if (!board.isTileAvailable(destinationTile)) return;
+		
+		// Execute the tile action. This class (Node) implements TileVisitor, so it is the visitor for the tiles
+		destinationTile.accept(this, player);
+	}
 
-		//ActionMessage action = board.moveToTileAndGetActionMessage();
+
+	/**
+	 * Make the player move on the board.
+	 * Check
+	 */
+	@Override
+	public void executeTileAction(TileLand destinationTile, Player player) {
+		board.movePlayerToTile(player, destinationTile);
+		PlayerMoves action = new PlayerMoves(player, destinationTile);
 		
 		/*
-		 * TODO : faire bouger le player sur le board (selon règles / contraintes)
-		 * - Si déplacement normal et valide : envoyer sa nouvelle position a tous les joueurs
-		 * - Si collision : afficher le "Bonjour" à tous les joueurs et incrémenter le compteur de bonjour de l'initiateur
+		 * Get the players nearby the player after he moves
+		 * If there are at least 1 :
+		 * - add them to the list of encountered players
+		 * - add the score to the PlayerMoves message
 		 */
-		
-		/* Si déplacement valide (pas de sortie de plateau etc) && déplacement simple (pas de changement de noeud) && pas de collision
-		 * 
-			// Broadcast the move action to the other players
-			Action action = new PlayerMoves(direction);
-			this.broadcastPlayers(action);
-		 */
-		
-
-		// TODO : clean ce code dégueulasse à base de ifs
-		// Si déplacement = changement de noeud
-		if (true) {
-			ActionMessage action = new PlayerLeaves(player);
-			this.broadcastPlayers(action, player);
+		List<Player> playersNearby = board.playersNearby(player);
+		int score = playersNearby.size(); 
+		if (score > 0) {
+			this.players_data.get(player).addEncounteredPlayers(playersNearby);
 			
-			// Remove the player from the board
-			this.board.removePlayer(player.getId());
-			
-			if (this.nodeName == NodeName.A) {
-				if (direction.getHorizontalDirection() != 0) {
-					this.makePlayerChangeNode(player, "B");
-				}
-				else {
-					this.makePlayerChangeNode(player, "D");
-				}
-			}
-			else if (this.nodeName == NodeName.B) {
-				if (direction.getHorizontalDirection() != 0) {
-					this.makePlayerChangeNode(player, "A");
-				}
-				else {
-					this.makePlayerChangeNode(player, "C");
-				}
-			}
-			else if (this.nodeName == NodeName.C) {
-				if (direction.getHorizontalDirection() != 0) {
-					this.makePlayerChangeNode(player, "D");
-				}
-				else {
-					this.makePlayerChangeNode(player, "B");
-				}
-			}
-			else if (this.nodeName == NodeName.D) {
-				if (direction.getHorizontalDirection() != 0) {
-					this.makePlayerChangeNode(player, "C");
-				}
-				else {
-					this.makePlayerChangeNode(player, "A");
-				}
+			action.setSayHi(score);
+			if (score > 1) {
+				action.setMessage("Wow !! Hello ! Hello !!!!");
 			}
 		}
+		
+		this.broadcastPlayers(action);
+	}
+
+	/**
+	 * It's a wall, do nothing
+	 */
+	@Override
+	public void executeTileAction(TileWall tile, Player player) {
+		return;
 	}
 	
-	protected void makePlayerChangeNode (Player player, String destinationNode) {
-		this.players_list.remove(player);	
+	@Override
+	public void executeTileAction(TileChangeZone tile, Player player) {
 		PlayerGameData playerGameData = this.players_data.get(player);
 		
 		try {
-			// Make the player join the new node
-			network.publish(destinationNode + "_change_node", ByteSerializable.getBytes(playerGameData));
+			this.makePlayerChangeNode(player, playerGameData, tile.getDestinationNode());
 
-			// Send the new queue node id to the player
-			ActionMessage action = new ChangeZone(player, destinationNode);
-			network.publish(player.getId(), ByteSerializable.getBytes(action));
-		} catch (IOException e) {
-			// TODOs
+			this.players_list.remove(player);
+			this.players_data.remove(player);
+			this.board.removePlayer(player);
+
+			ActionMessage action = new PlayerLeaves(player);
+			this.broadcastPlayers(action, player);
+			
+			action = new ChangeZone(player, tile.getDestinationNode());
+			this.sendActionMessageTo(player, action);
+		}
+		catch (IOException e) {
+			// TODO Si le noeud n'existe pas ? ( = pas d'instance active)
 			e.printStackTrace();
 		}
+	}
+
+	
+	/// TODO : Attendre une réponse positive de réception ?
+	// Ou seulement vérifier que la queue est up ?
+	private void makePlayerChangeNode (Player player, PlayerGameData playerGameData, String destinationNode) throws IOException {
+		// Make the player join the new node
+		network.publish(destinationNode + "_change_node", ByteSerializable.getBytes(playerGameData));
+
+		// Send the new queue node id to the player
+		ActionMessage action = new ChangeZone(player, destinationNode);
+		this.sendActionMessageTo(player, action);
 	}
 	
 	/**
 	 * Send an action to all the players
+	 * @param action
 	 */
 	private void broadcastPlayers (ActionMessage action) {
 		byte[] actionBytes = ByteSerializable.getBytes(action);
@@ -228,17 +236,21 @@ public class Node {
 		}
 	}
 	
+	private void sendActionMessageTo (Player player, ActionMessage action) throws IOException {
+		this.network.publish(player.getId(), ByteSerializable.getBytes(action));
+	}
+	
 	/**
 	 * Send an action to all the players
+	 * @param action
+	 * @param excludedPlayer
 	 */
-	private void broadcastPlayers (ActionMessage action, Player excludedPlayer) {
-		byte[] actionBytes = ByteSerializable.getBytes(action);
-		
+	private void broadcastPlayers (ActionMessage action, Player excludedPlayer) {		
 		for (Player player: this.players_list) {
 			if (player.equals(excludedPlayer)) continue;
 			
 			try {
-				network.publish(player.getId(), actionBytes);
+				this.sendActionMessageTo(player, action);
 			}
 			catch (IOException e) {
 				// TODO 
@@ -246,4 +258,5 @@ public class Node {
 			}
 		}
 	}
+
 }

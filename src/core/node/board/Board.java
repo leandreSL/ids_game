@@ -1,6 +1,8 @@
 package core.node.board;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import share.Direction;
@@ -38,7 +40,7 @@ public class Board {
 				// TODO : changer l'implémentation ?
 				// TODO : Aussi, vérifier s'il n'y a pas un joueur dans les parages (pour dire "Bonjour" et inc le compteur)
 				if (tiles[i][j] instanceof TileLand && tiles[i][j].isAvailable()) {
-					((TileLand) tiles[i][j]).topic = player.getId();
+					((TileLand) tiles[i][j]).player = player;
 					this.playerPositions.put(player, tiles[i][j]);
 					
 					return;
@@ -78,11 +80,13 @@ public class Board {
 		return true;
 	}
 	
-	public void removePlayer (String playerId) {
-		/*Tile playerPosition = this.playerPositions.get(playerId);
-		this.tiles[playerPosition.x][playerPosition.y].topic = null;
-		
-		this.playerPositions.remove(playerId);*/
+	/**
+	 * Remove the player from the board
+	 * @param player
+	 */
+	public void removePlayer (Player player) {
+		TileLand source = (TileLand) this.playerPositions.remove(player);
+		source.player = null;
 	}
 	
 	public Tile getDestinationTile (Player player, Direction direction) {
@@ -99,7 +103,6 @@ public class Board {
 			 * If source tile is null
 			 * If the destination tile is out of bounds 
 			 */
-			e.printStackTrace();
 			return null;
 		}
 	}
@@ -110,5 +113,43 @@ public class Board {
 	 */
 	public boolean isTileAvailable(Tile destination) {
 		return destination.isAvailable();
+	}
+
+	/**
+	 * Update the position of the player, move it to the destination tile.
+	 * @param player
+	 * @param destination
+	 */
+	public void movePlayerToTile(Player player, TileLand destination) {
+		TileLand source = (TileLand) this.playerPositions.get(player);
+		
+		destination.player = source.player;
+		source.player = null;
+		this.playerPositions.put(player, destination);
+	}
+
+	public List<Player> playersNearby(Player player) {
+		List<Player> playersNearby = new ArrayList<>();
+		Tile source = this.playerPositions.get(player);
+		
+		/*
+		 *  For each tile nearby the player's tile (all the tiles around, distance 1)
+		 *  Min/max because the player might be on the border of the board
+		 */
+		for (int i = Math.max(0, source.x - 1); i < Math.min(source.x + 1, width); i++) {
+			for (int j = Math.max(0, source.y - 1); j < Math.min(source.y + 1, height); j++) {
+				// Continue when the coordinates point the source player itself
+				if (source.x == i && source.y == j) continue;
+				// If it's not a land there can't be a player on it
+				if (!(tiles[i][j] instanceof TileLand)) continue;
+				
+				TileLand tile = (TileLand) tiles[i][j];
+				if (tile.player == null) continue;
+				
+				playersNearby.add(tile.player);
+			}
+		}
+		
+		return playersNearby;
 	}
 }

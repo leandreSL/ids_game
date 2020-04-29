@@ -2,8 +2,8 @@ package share.action;
 
 import share.Player;
 
+@SuppressWarnings("serial")
 public class PlayerJoins extends ActionMessage {
-	private static final long serialVersionUID = 1L;
 
 	public PlayerJoins(Player source) {
 		super(source);
