@@ -26,6 +26,11 @@ public class PlayerGameData implements Serializable {
 		return this.player.getId();
 	}
 
+	/**
+	 * Add all the players nearby to the list of all the players encountered.
+	 * Duplicates are not added.
+	 * @param playersNearby
+	 */
 	public void addEncounteredPlayers(List<Player> playersNearby) {
 		this.playersEncountered.addAll(playersNearby);
 	}

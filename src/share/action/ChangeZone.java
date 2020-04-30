@@ -1,16 +1,13 @@
 package share.action;
 
-import share.Player;
-
 /**
  * Received when the player changes zone.
  */
 @SuppressWarnings("serial")
-public class ChangeZone extends ActionMessage {
-	protected String nodeName;
+public class ChangeZone implements ActionMessage {
+	private String nodeName;
 
-	public ChangeZone(Player source, String nodeName) {
-		super(source);
+	public ChangeZone(String nodeName) {
 		this.nodeName = nodeName;
 	}
 
@@ -19,4 +16,7 @@ public class ChangeZone extends ActionMessage {
 		visitor.visit(this);
 	}
 
+	public String getNodeName() {
+		return nodeName;
+	}
 }

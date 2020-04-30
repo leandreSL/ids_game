@@ -1,5 +1,6 @@
-package core.node.board;
+package share.board;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Map;
 import share.Direction;
 import share.Player;
 
-public class Board {
+public class Board implements Serializable {
 	int height;
 	int width;
 	Tile[][] tiles;
@@ -48,37 +49,6 @@ public class Board {
 			}
 		}
 	}
-
-
-	public boolean move(Tile source, int horizontalDirection, int verticalDirection) {
-		/*int new_coord;
-		Tile playerPosition = this.playerPositions.get(source.topic);
-		
-		// move in vertical direction
-		if (horizontalDirection == 0) {
-			new_coord = source.y + verticalDirection;
-
-			if (new_coord < 0 || new_coord >= this.height)
-				return false;
-
-			this.tiles[source.x][new_coord].topic = source.topic;
-			playerPosition.y = new_coord;
-		}
-		// move in horizontal direction
-		else {
-			new_coord = source.x + horizontalDirection;
-
-			if (new_coord < 0 || new_coord >= this.width)
-				return false;
-
-			this.tiles[new_coord][source.y].topic = source.topic;
-			playerPosition.x = new_coord;
-		}
-
-		// reset the previous tile
-		source.topic = null;*/
-		return true;
-	}
 	
 	/**
 	 * Remove the player from the board
@@ -88,11 +58,15 @@ public class Board {
 		TileLand source = (TileLand) this.playerPositions.remove(player);
 		source.player = null;
 	}
+
+	public TileLand getPlayerTile(Player player) {
+		return (TileLand) this.playerPositions.get(player);
+	}
 	
 	public Tile getDestinationTile (Player player, Direction direction) {
 		try {
 			// Get the Tile where the player is located on.
-			Tile source = this.playerPositions.get(player);
+			Tile source = getPlayerTile(player);
 			
 			// Get the destination tile
 			Tile destination = this.tiles[source.x + direction.getHorizontalDirection()][source.y + direction.getVerticalDirection()];
@@ -121,7 +95,7 @@ public class Board {
 	 * @param destination
 	 */
 	public void movePlayerToTile(Player player, TileLand destination) {
-		TileLand source = (TileLand) this.playerPositions.get(player);
+		TileLand source = (TileLand) getPlayerTile(player);
 		
 		destination.player = source.player;
 		source.player = null;
@@ -130,7 +104,7 @@ public class Board {
 
 	public List<Player> playersNearby(Player player) {
 		List<Player> playersNearby = new ArrayList<>();
-		Tile source = this.playerPositions.get(player);
+		Tile source = getPlayerTile(player);
 		
 		/*
 		 *  For each tile nearby the player's tile (all the tiles around, distance 1)
@@ -151,5 +125,15 @@ public class Board {
 		}
 		
 		return playersNearby;
+	}
+	
+	public void updateTile (Tile tile) {
+		try {
+			this.tiles[tile.x][tile.y] = tile;
+		}
+		catch (NullPointerException | IndexOutOfBoundsException e) {
+			// If for any reason tile.x or tile.y is out of bounds or if the tile is null
+			return;
+		}
 	}
 }

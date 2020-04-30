@@ -1,21 +1,19 @@
 package share.action;
 
-import core.node.board.TileLand;
-import core.player.ClientData;
-import share.Direction;
-import share.Player;
+import share.board.TileLand;
 
 @SuppressWarnings("serial")
-public class PlayerMoves extends ActionMessage {
+public class PlayerMoves implements ActionMessage {
 	private static final String BASIC_MESSAGE = "Hello !!";
-	
+
+	private final TileLand sourceTile;
 	private final TileLand destinationTile;
 	private boolean sayHi;
 	private String message;
 	private int score;
 
-	public PlayerMoves(Player player, TileLand destinationTile) {
-		super(player);
+	public PlayerMoves (TileLand sourceTile, TileLand destinationTile) {
+		this.sourceTile = sourceTile;
 		this.destinationTile = destinationTile;
 		this.message = BASIC_MESSAGE;
 		this.sayHi = false;
@@ -24,6 +22,10 @@ public class PlayerMoves extends ActionMessage {
 	@Override
 	public void accept(ActionVisitor visitor) {
 		visitor.visit(this);
+	}
+	
+	public TileLand getSourceTile() {
+		return sourceTile;
 	}
 
 	public TileLand getDestinationTile() {

@@ -1,4 +1,4 @@
-package core.node.board;
+package share.board;
 
 import share.Player;
 

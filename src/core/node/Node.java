@@ -6,19 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import core.node.board.Board;
-import core.node.board.Tile;
-import core.node.board.TileChangeZone;
-import core.node.board.TileLand;
-import core.node.board.TileVisitor;
-import core.node.board.TileWall;
 import share.Direction;
 import share.Player;
+import share.RabbitWrapper;
 import share.action.ActionMessage;
 import share.action.ChangeZone;
-import share.action.PlayerJoins;
-import share.action.PlayerLeaves;
 import share.action.PlayerMoves;
+import share.action.UpdateBoard;
+import share.action.UpdateTile;
+import share.board.Board;
+import share.board.Tile;
+import share.board.TileChangeZone;
+import share.board.TileLand;
+import share.board.TileVisitor;
+import share.board.TileWall;
 
 
 public class Node implements TileVisitor {
@@ -76,6 +77,11 @@ public class Node implements TileVisitor {
 		// For when a player joins the game
         network.createQueueAndListen(this.nodeName + "_join", (consumerTag, delivery) -> {
             Player player = (Player) ByteSerializable.fromBytes(delivery.getBody());
+    		if (player == null) {
+    			// TODO : on fait quoi ?
+    			return;
+    		}
+    		
         	synchronized (this) {
             	this.initialJoin(player);
         	}
@@ -84,6 +90,11 @@ public class Node implements TileVisitor {
         // For when the player wants to move
         network.createQueueAndListen(this.nodeName + "_move", (consumerTag, delivery) -> {
         	Direction direction = (Direction) ByteSerializable.fromBytes(delivery.getBody());
+    		if (direction == null) {
+    			// TODO : on fait quoi ?
+    			return;
+    		}
+    		
         	synchronized (this) {
             	this.move(direction);
         	}
@@ -91,8 +102,13 @@ public class Node implements TileVisitor {
         
         // When a node receives a player from an other node.
         network.createQueueAndListen(this.nodeName + "_change_node", (consumerTag, delivery) -> {
+    		PlayerGameData player = (PlayerGameData) ByteSerializable.fromBytes(delivery.getBody());
+    		if (player == null) {
+    			// TODO : on fait quoi ?
+    			return;
+    		}
+    		
         	synchronized (this) {
-        		PlayerGameData player = (PlayerGameData) ByteSerializable.fromBytes(delivery.getBody());
         		this.receivePlayerChangeNode(player);
         	}
         });
@@ -122,8 +138,19 @@ public class Node implements TileVisitor {
 	}
 	
 	private void join (Player player) {
-		ActionMessage action = new PlayerJoins(player);
-		this.broadcastPlayers(action);
+		ActionMessage action = new UpdateBoard(board);
+		try {
+			this.sendActionMessageTo(player, action);
+		}
+		catch (IOException e) {
+			// TODO supprimer le playeur du jeu et le déconnecter ?
+			e.printStackTrace();
+		}
+		
+		action = new UpdateTile(board.getPlayerTile(player));
+		this.broadcastPlayers(action, player);
+		
+		
 	}
 	
 	private void move (Direction direction) {
@@ -151,9 +178,9 @@ public class Node implements TileVisitor {
 	 * Check
 	 */
 	@Override
-	public void executeTileAction(TileLand destinationTile, Player player) {
+	public void executeTileAction(TileLand destinationTile, Player player) {		
 		board.movePlayerToTile(player, destinationTile);
-		PlayerMoves action = new PlayerMoves(player, destinationTile);
+		PlayerMoves action = new PlayerMoves(board.getPlayerTile(player), destinationTile);
 		
 		/*
 		 * Get the players nearby the player after he moves
@@ -171,7 +198,7 @@ public class Node implements TileVisitor {
 				action.setMessage("Wow !! Hello ! Hello !!!!");
 			}
 		}
-		
+
 		this.broadcastPlayers(action);
 	}
 
@@ -188,16 +215,18 @@ public class Node implements TileVisitor {
 		PlayerGameData playerGameData = this.players_data.get(player);
 		
 		try {
+			ActionMessage action = new UpdateTile(board.getPlayerTile(player));
+			
+			
 			this.makePlayerChangeNode(player, playerGameData, tile.getDestinationNode());
 
 			this.players_list.remove(player);
 			this.players_data.remove(player);
 			this.board.removePlayer(player);
 
-			ActionMessage action = new PlayerLeaves(player);
 			this.broadcastPlayers(action, player);
 			
-			action = new ChangeZone(player, tile.getDestinationNode());
+			action = new ChangeZone(tile.getDestinationNode());
 			this.sendActionMessageTo(player, action);
 		}
 		catch (IOException e) {
@@ -214,7 +243,7 @@ public class Node implements TileVisitor {
 		network.publish(destinationNode + "_change_node", ByteSerializable.getBytes(playerGameData));
 
 		// Send the new queue node id to the player
-		ActionMessage action = new ChangeZone(player, destinationNode);
+		ActionMessage action = new ChangeZone(destinationNode);
 		this.sendActionMessageTo(player, action);
 	}
 	

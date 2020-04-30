@@ -1,4 +1,4 @@
 - Synchronisation côté Node
+	-> Fait, mais à vérifier
 	Client c'est fait, mais vérifier
 - Gérer les déconnexions
-- Envoyer les modif du board au client (comment ?)

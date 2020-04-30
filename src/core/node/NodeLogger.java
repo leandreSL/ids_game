@@ -5,11 +5,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import core.logger.Logger;
-import core.node.board.TileChangeZone;
-import core.node.board.TileLand;
-import core.node.board.TileVisitor;
-import core.node.board.TileWall;
 import share.Player;
+import share.board.TileChangeZone;
+import share.board.TileLand;
+import share.board.TileWall;
 
 public class NodeLogger extends Node {	
 	DateTimeFormatter timeFormatter;

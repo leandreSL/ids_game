@@ -4,24 +4,15 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
-
-import com.rabbitmq.client.BuiltinExchangeType;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
 
 import core.node.ByteSerializable;
 import share.Direction;
 import share.Player;
+import share.RabbitWrapper;
 import share.action.ActionMessage;
 import share.action.ActionVisitor;
-import share.action.BasicActionVisitor;
 
 public class Client {
-	private static final String EXCHANGE_NAME = "game_exchange";
-
 	final private ClientData data;
 	private ActionVisitor coreActionVisitor;
 	/**
@@ -32,105 +23,55 @@ public class Client {
 	 */
 	private Set<ActionVisitor> actionVisitorsObservers;
 
-	Channel channel;
+	private RabbitWrapper network;
 
-	public Client(String playerName, String nodeName) {
-		String playerId = this.initNetworkMessaging();
+	public Client(String playerName, String nodeName) throws IOException {
+		this.network = new RabbitWrapper();
+		
+		String playerId = this.initPlayerQueue();
 		this.data = new ClientData(new Player(playerId, playerName), nodeName);
 		
-		this.coreActionVisitor = new BasicActionVisitor(data);
+		this.coreActionVisitor = new CoreActionVisitor(data);
 		this.actionVisitorsObservers = Collections.synchronizedSet(new HashSet<ActionVisitor>());
 		
 		tempScenario();
-	}
-
-	private String initNetworkMessaging () {
-		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
-		Connection connection;
-
-		try {
-			connection = factory.newConnection();
-			channel = connection.createChannel();
-			channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
-
-			return this.initPlayerQueue();
-		} catch (IOException e) {
-			// TODO
-			e.printStackTrace();
-		} catch (TimeoutException e) {
-			// TODO
-			e.printStackTrace();
-		}
-		
-		return null;
 	}
 	
 	private void tempScenario () {
 		try {
 			System.out.println("Process start");
 			System.out.println("---------- Send join to Node A");
-			this.channel.basicPublish(EXCHANGE_NAME, this.data.nodeName + "_join", null,
-					ByteSerializable.getBytes(this.data.player));
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			this.network.publish(this.data.getNodeName() + "_join", ByteSerializable.getBytes(this.data.getPlayer()));
+			Thread.sleep(5000);
+			
 			System.out.println();
 			System.out.println("---------- Send move");
-			this.channel.basicPublish(EXCHANGE_NAME, this.data.nodeName + "_move", null,
-					ByteSerializable.getBytes(new Direction(this.data.player, 1, 0)));
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
+			Thread.sleep(5000);
+			
 			System.out.println();
 			System.out.println("---------- Send move");
-			this.channel.basicPublish(EXCHANGE_NAME, this.data.nodeName + "_move", null,
-					ByteSerializable.getBytes(new Direction(this.data.player, 1, 0)));
-
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
+			Thread.sleep(5000);
+			
 			System.out.println();
 			System.out.println("---------- Send move");
-			this.channel.basicPublish(EXCHANGE_NAME, this.data.nodeName + "_move", null,
-					ByteSerializable.getBytes(new Direction(this.data.player, 1, 0)));
-		} catch (IOException e) {
-			// TODO
+			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
+		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private String initPlayerQueue() {
-		try {
-			// Create the queue and bind it to the topic
-			String queueNamePlayer = channel.queueDeclare().getQueue();
-			channel.queueBind(queueNamePlayer, EXCHANGE_NAME, queueNamePlayer);
-
-			/*
-			 * Subscribe to the topic "[queueNamePlayer]"
-			 */
-			DeliverCallback deliverCallbackPlayer = (consumerTag, delivery) -> {
+	private String initPlayerQueue () throws IOException {
+		return this.network.createClientQueueAndListen((consumerTag, delivery) -> {
+			try {
 				ActionMessage actionMessage = (ActionMessage) ByteSerializable.fromBytes(delivery.getBody());
 				this.notifyActionVisitors(actionMessage);
-			};
-			channel.basicConsume(queueNamePlayer, true, deliverCallbackPlayer, consumerTag -> {});
-			
-			return queueNamePlayer;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return null;
+			}
+			catch (Exception e) {
+				// TODO : On fait quoi dans ce cas là ?
+			}
+		});
 	}
 
 	/**
@@ -159,7 +100,6 @@ public class Client {
 	 * @param actionMessage
 	 */
 	private void notifyActionVisitors(ActionMessage actionMessage) {
-		// TODO : add Board to the synchronization ?
 		synchronized (this.data) {
 			actionMessage.accept(this.coreActionVisitor);
 
