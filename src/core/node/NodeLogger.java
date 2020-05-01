@@ -6,6 +6,9 @@ import java.time.format.DateTimeFormatter;
 
 import core.logger.Logger;
 import share.Player;
+import share.board.TileChangeZone;
+import share.board.TileLand;
+import share.board.TileWall;
 
 public class NodeLogger extends Node {	
 	DateTimeFormatter timeFormatter;
@@ -17,8 +20,9 @@ public class NodeLogger extends Node {
 
 	private void log (String message) {
 		try {
-			channel.basicPublish(EXCHANGE_NAME, Logger.LOGGER_QUEUE_NAME, null, ByteSerializable.getBytes(LocalTime.now().format(timeFormatter) + " - " + nodeName + ": " + message));
-		} catch (IOException e) {
+			network.publish(Logger.LOGGER_QUEUE_NAME, ByteSerializable.getBytes(LocalTime.now().format(timeFormatter) + " - " + nodeName + ": " + message));
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -44,10 +48,30 @@ public class NodeLogger extends Node {
 	}
 
 	@Override
-	protected void sendPlayerChangeNode (Player player, String destinationNode) {
-		super.sendPlayerChangeNode(player, destinationNode);
+	public void executeTileAction(TileLand tile, Player player) {
+		super.executeTileAction(tile, player);
+
+		String message = player + " moves to tile " + tile;
 		
-		String message = player + " quits zone " + nodeName + " for zone " + destinationNode;
+		System.out.println(message);
+		this.log(message);
+	}
+
+	@Override
+	public void executeTileAction(TileChangeZone tile, Player player) {
+		super.executeTileAction(tile, player);
+
+		String message = player + " quits zone " + nodeName + " for zone " + tile.getDestinationNode();
+		
+		System.out.println(message);
+		this.log(message);	
+	}
+
+	@Override
+	public void executeTileAction(TileWall tile, Player player) {
+		super.executeTileAction(tile, player);
+
+		String message = player + " tried to hit the wall " + tile + " !";
 		
 		System.out.println(message);
 		this.log(message);
