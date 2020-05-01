@@ -117,5 +117,9 @@ public class Client {
 	public ClientData getClientData() {
 		return this.data;
 	}
+	
+	public void move (int x, int y) throws IOException {
+		this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), x, y)));
+	}
 
 }
