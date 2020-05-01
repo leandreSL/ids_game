@@ -10,7 +10,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
-import core.node.board.Board;
+import core.node.Board;
 import share.Direction;
 import share.Player;
 import share.action.ActionMessage;
@@ -190,16 +190,16 @@ public class Node {
 		Player sourcePlayer = direction.getPlayer();
 		
 		if (!this.players_list.contains(sourcePlayer)) {
-			// TODO : si le player n'est pas dans la zone (hackeur méchant pas gentil)
+			// TODO : si le player n'est pas dans la zone (hackeur mï¿½chant pas gentil)
 		}
 		
 		/*
-		 * TODO : faire bouger le player sur le board (selon règles / contraintes)
-		 * - Si déplacement normal et valide : envoyer sa nouvelle position a tous les joueurs
-		 * - Si collision : afficher le "Bonjour" à tous les joueurs et incrémenter le compteur de bonjour de l'initiateur
+		 * TODO : faire bouger le player sur le board (selon rï¿½gles / contraintes)
+		 * - Si dï¿½placement normal et valide : envoyer sa nouvelle position a tous les joueurs
+		 * - Si collision : afficher le "Bonjour" ï¿½ tous les joueurs et incrï¿½menter le compteur de bonjour de l'initiateur
 		 */
 		
-		/* Si déplacement valide (pas de sortie de plateau etc) && déplacement simple (pas de changement de noeud) && pas de collision
+		/* Si dï¿½placement valide (pas de sortie de plateau etc) && dï¿½placement simple (pas de changement de noeud) && pas de collision
 		 * 
 			// Broadcast the move action to the other players
 			Action action = new PlayerMoves(direction);
@@ -207,8 +207,8 @@ public class Node {
 		 */
 		
 
-		// TODO : clean ce code dégueulasse à base de ifs
-		// Si déplacement = changement de noeud
+		// TODO : clean ce code dï¿½gueulasse ï¿½ base de ifs
+		// Si dï¿½placement = changement de noeud
 		if (true) {
 			ActionMessage action = new PlayerLeaves(sourcePlayer);
 			this.broadcastPlayers(action, sourcePlayer);

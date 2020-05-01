@@ -1,9 +1,11 @@
 package ui;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -25,6 +27,9 @@ public class MenuController {
     @FXML
     BorderPane rootPane;
 
+    @FXML
+    ListView<String> nodes_view;
+
     final String[] nodes_names = {"nodeA", "nodeB", "nodeC", "nodeD"};
 
     /**
@@ -36,6 +41,14 @@ public class MenuController {
 
     @FXML
     private void initialize() {
+        Platform.runLater(() -> {
+            adjustMenu();
+        });
+
+    }
+
+    public void adjustMenu(){
+        nodes_view.getItems().addAll(nodes_names);
         reglages.setOnMouseClicked((e) ->{
             try {
                 BorderPane pane = FXMLLoader.load(getClass().getResource("reglages.fxml"));
