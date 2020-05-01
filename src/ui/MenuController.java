@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Random;
 
+import core.player.ClientController;
+
 public class MenuController {
 
     @FXML
@@ -31,12 +33,15 @@ public class MenuController {
     ListView<String> nodes_view;
 
     final String[] nodes_names = {"nodeA", "nodeB", "nodeC", "nodeD"};
+    
+    ClientController clientController;
 
     /**
      * The constructor.
      * The constructor is called before the initialize() method.
      */
     public MenuController() {
+    	clientController = new ClientController();
     }
 
     @FXML
@@ -69,6 +74,8 @@ public class MenuController {
                 Random random = new Random();
                 int index = random.nextInt(nodes_names.length);
                 controller.mainListener(stage,nodes_names[index]);
+                
+                //clientController.init(playerName, nodeName);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

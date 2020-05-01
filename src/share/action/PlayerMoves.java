@@ -37,6 +37,10 @@ public class PlayerMoves implements ActionMessage {
 		this.score = score;
 	}
 	
+	/**
+	 * True if there are players nearby the player after he moves.
+	 * @return
+	 */
 	public boolean sayHi() {
 		return sayHi;
 	}
@@ -49,7 +53,11 @@ public class PlayerMoves implements ActionMessage {
 		return message;
 	}
 	
-	public int getScore() {
+	/**
+	 * Score : how many players are nearby the player.
+	 * @return
+	 */
+	public int getScore () {
 		return score;
 	}
 }

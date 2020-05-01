@@ -21,3 +21,6 @@ logger:
 
 clean:
 	mvn clean
+
+javafx:
+	mvn javafx:run

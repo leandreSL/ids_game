@@ -71,13 +71,8 @@ public class Client {
 
 	private String initPlayerQueue () throws IOException {
 		return this.network.createClientQueueAndListen((consumerTag, delivery) -> {
-			try {
-				ActionMessage actionMessage = (ActionMessage) ByteSerializable.fromBytes(delivery.getBody());
-				this.notifyActionVisitors(actionMessage);
-			}
-			catch (Exception e) {
-				// TODO : On fait quoi dans ce cas là ?
-			}
+			ActionMessage actionMessage = (ActionMessage) ByteSerializable.fromBytes(delivery.getBody());
+			this.notifyActionVisitors(actionMessage);
 		});
 	}
 
@@ -121,8 +116,9 @@ public class Client {
 		return this.data;
 	}
 	
-	public void move (int x, int y) throws IOException {
-		this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), x, y)));
+	public void move (int horizontalDirection, int verticalDirection) throws IOException {
+		String topic = this.data.getNodeName() + "_move";
+		this.network.publish(topic, ByteSerializable.getBytes(new Direction(this.data.getPlayer(), horizontalDirection, verticalDirection)));
 	}
 
 }
