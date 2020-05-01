@@ -1,11 +1,16 @@
 package core.node;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import core.node.board.BoardFactory;
+import core.node.board.BoardFactoryA;
+import core.node.board.WrongSizeBoardException;
 import share.Direction;
 import share.Player;
 import share.RabbitWrapper;
@@ -22,46 +27,36 @@ import share.board.TileVisitor;
 import share.board.TileWall;
 
 
-public class Node implements TileVisitor {
-	private static final int[] BOARD_SIZE = {7, 7};
-
-	private enum NodeName {A, B, C, D};
-	
+public class Node implements TileVisitor {	
 	protected RabbitWrapper network;
 	
 	String[] neighbourNodesName;
-	NodeName nodeName;
-	String stringNodeName;
+	String nodeName;
 	Board board;
-	List<Player> players_list;
+	Set<Player> players_list;
 	Map<Player, PlayerGameData> players_data;
 	
 	
 	public Node (String name, String[] neighbours_node_name) {
-		NodeName nodeName = null;
-		switch (name) {
-			case "A":
-				nodeName = NodeName.A;
-				break;
-	
-			case "B":
-				nodeName = NodeName.B;
-				break;
-	
-			case "C":
-				nodeName = NodeName.C;
-				break;
-	
-			case "D":
-				nodeName = NodeName.D;
-				break;
-		}
-		this.nodeName = nodeName;
-		this.stringNodeName = name;
+		this.nodeName = name;
 		this.neighbourNodesName = neighbours_node_name;
-		this.board = new Board(BOARD_SIZE[0], BOARD_SIZE[0]);
+		
+		try {
+			// Instantiate the associated board
+			Class<?> boardFactoryClass = Class.forName("BoardFactory" + name);
+			Constructor<?> boardFactoryConstructor = boardFactoryClass.getConstructor();
+			this.board = ((BoardFactory) boardFactoryConstructor.newInstance()).createBoard();
+		}
+		catch (Exception e) {
+			try {
+				this.board = new BoardFactoryA().createBoard();
+			}
+			catch (WrongSizeBoardException e1) {
+				// Never happen, the BoardFactoryA has for sure a good size
+			}
+		}
 
-        this.players_list = new ArrayList<>();
+        this.players_list = new HashSet<>();
         this.players_data = new HashMap<>();
         this.network = new RabbitWrapper();
 
@@ -120,6 +115,8 @@ public class Node implements TileVisitor {
 	 * @param player
 	 */
 	protected void initialJoin (Player player) {
+		if (this.players_list.contains(player)) return;
+		
 		board.addPlayer(player);
 		this.players_list.add(player);
 		this.players_data.put(player, new PlayerGameData(player));
@@ -128,6 +125,8 @@ public class Node implements TileVisitor {
 
 
 	protected void receivePlayerChangeNode(PlayerGameData playerGameData) {
+		if (this.players_list.contains(playerGameData.getPlayer())) return;
+		
 		Player player = playerGameData.getPlayer();
 
 		// TODO : stratégie de placement différent quand le joueur provient d'un noeud voisin ?
@@ -165,9 +164,7 @@ public class Node implements TileVisitor {
 		// check the tile is available, i.e that this is a valid displacement, that the tile is empty
 		Tile destinationTile = board.getDestinationTile(player, direction);
 		if (destinationTile == null) return;
-
 		if (!board.isTileAvailable(destinationTile)) return;
-		
 		// Execute the tile action. This class (Node) implements TileVisitor, so it is the visitor for the tiles
 		destinationTile.accept(this, player);
 	}

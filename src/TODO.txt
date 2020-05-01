@@ -2,3 +2,6 @@
 	-> Fait, mais à vérifier
 	Client c'est fait, mais vérifier
 - Gérer les déconnexions
+- Réguler l'envoie de messages du client au serveur pour éviter une surcharge & un comportement inattendu
+  (si le joueur spam la touche "fleche" ça doit pas envoyer 400 messages tant que le mouvement est pas traité)
+  

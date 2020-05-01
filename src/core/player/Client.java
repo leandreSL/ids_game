@@ -47,6 +47,10 @@ public class Client {
 			System.out.println();
 			System.out.println("---------- Send move");
 			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
+			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
+			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
+			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
+			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
 			Thread.sleep(5000);
 			
 			System.out.println();

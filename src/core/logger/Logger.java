@@ -11,7 +11,6 @@ import share.RabbitWrapper;
  * Logs in the standard output the messages received from the NodeLogger instances.
  */
 public class Logger {
-	private static final String EXCHANGE_NAME = "game_exchange";
 	public static final String LOGGER_QUEUE_NAME = "logger";
 
 	private RabbitWrapper network;

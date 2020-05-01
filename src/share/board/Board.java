@@ -6,32 +6,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import core.node.board.WrongSizeBoardException;
 import share.Direction;
 import share.Player;
 
+@SuppressWarnings("serial")
 public class Board implements Serializable {
-	int height;
-	int width;
-	Tile[][] tiles;
+	final int height;
+	final int width;
+	final Tile[][] tiles;
 	
-	Map<Player, Tile> playerPositions;
-
-	public Board(int width, int height) {
-		this.width = width;
-		this.height = height;
-		tiles = new Tile[height][width];
+	final Map<Player, Tile> playerPositions;
+	
+	public Board (Tile[][] tiles) throws WrongSizeBoardException {
+		height = tiles.length;
+		if (height < 1) throw new WrongSizeBoardException("Height but me greater than zero.");
 		
-		this.init();
+		width = tiles[0].length;
+		if (width < 1) throw new WrongSizeBoardException("Width but me greater than zero.");
 		
+		this.tiles = tiles;
 		this.playerPositions = new HashMap<>();
-	}
-	
-	private void init () {
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				tiles[i][j] = new TileLand(i, i, null);
-			}
-		}
 	}
 	
 	public void addPlayer (Player player) {
@@ -69,7 +64,7 @@ public class Board implements Serializable {
 			Tile source = getPlayerTile(player);
 			
 			// Get the destination tile
-			Tile destination = this.tiles[source.x + direction.getHorizontalDirection()][source.y + direction.getVerticalDirection()];
+			Tile destination = this.tiles[source.y + direction.getVerticalDirection()][source.x + direction.getHorizontalDirection()];
 			return destination;
 		}
 		catch (NullPointerException | IndexOutOfBoundsException e) {
@@ -110,10 +105,10 @@ public class Board implements Serializable {
 		 *  For each tile nearby the player's tile (all the tiles around, distance 1)
 		 *  Min/max because the player might be on the border of the board
 		 */
-		for (int i = Math.max(0, source.x - 1); i < Math.min(source.x + 1, width); i++) {
-			for (int j = Math.max(0, source.y - 1); j < Math.min(source.y + 1, height); j++) {
+		for (int i = Math.max(0, source.y - 1); i < Math.min(source.y + 1, height); i++) {
+			for (int j = Math.max(0, source.x - 1); j < Math.min(source.x + 1, width); j++) {
 				// Continue when the coordinates point the source player itself
-				if (source.x == i && source.y == j) continue;
+				if (source.x == j && source.y == i) continue;
 				// If it's not a land there can't be a player on it
 				if (!(tiles[i][j] instanceof TileLand)) continue;
 				
@@ -129,7 +124,7 @@ public class Board implements Serializable {
 	
 	public void updateTile (Tile tile) {
 		try {
-			this.tiles[tile.x][tile.y] = tile;
+			this.tiles[tile.y][tile.x] = tile;
 		}
 		catch (NullPointerException | IndexOutOfBoundsException e) {
 			// If for any reason tile.x or tile.y is out of bounds or if the tile is null

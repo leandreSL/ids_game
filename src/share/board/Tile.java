@@ -11,7 +11,7 @@ public abstract class Tile implements Serializable {
 	
 	public Tile (int x, int y) {
 		this.x = x;
-		this.x = y;
+		this.y = y;
 	}
 
 
