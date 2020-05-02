@@ -1,7 +1,4 @@
-- Synchronisation côté Node
-	-> Fait, mais à vérifier
-	Client c'est fait, mais vérifier
-- Gérer les déconnexions
-- Réguler l'envoie de messages du client au serveur pour éviter une surcharge & un comportement inattendu
-  (si le joueur spam la touche "fleche" ça doit pas envoyer 400 messages tant que le mouvement est pas traité)
+- Gï¿½rer les dï¿½connexions
+- Rï¿½guler l'envoie de messages du client au serveur pour ï¿½viter une surcharge & un comportement inattendu
+  (si le joueur spam la touche "fleche" ï¿½a doit pas envoyer 400 messages tant que le mouvement est pas traitï¿½)
   

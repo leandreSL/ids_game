@@ -22,7 +22,6 @@ public class CoreActionVisitor implements ActionVisitor {
 	@Override
 	public void visit (UpdateBoard updateBoardMessage) {
 		System.out.println("UpdateBoard");
-		// TODO : Est-ce que set le board et le save dans ClientDate est utile ? le but est juste de le donner aux observers ?
 		this.data.setBoard(updateBoardMessage.getBoard());
 	}
 

@@ -29,14 +29,18 @@ public class PlateauController {
     @FXML
     Label nodeName;
 
+    @FXML
+    Label score;
+
+    @FXML
+    Label message;
+
+    @FXML
+    HBox infos;
+
     Rectangle grille [][];
     Scene scene;
     private String node ="";
-
-
-
-    //int playerX;
-    //int playerY;
 
     String nextNode1;
     String nextNode2;
@@ -69,12 +73,6 @@ public class PlateauController {
 
     @FXML
     private void initialize() {
-        Platform.runLater(() -> {
-            //initPlateau();
-            //playerX = 0;
-            //playerY = 0;
-            //movePlayer(playerX,playerY,grille);
-        });
 
     }
 
@@ -135,37 +133,28 @@ public class PlateauController {
                     case Z:
                     case UP:
                         clientCtrl.move(0,-1);
+                        message.setText("");
                         break;
                     case Q:
                     case LEFT:
                         clientCtrl.move(-1,0);
+                        message.setText("");
                         break;
                     case S :
                     case DOWN:
                         clientCtrl.move(0,1);
+                        message.setText("");
                         break;
                     case D:
                     case RIGHT:
                         clientCtrl.move(1,0);
+                        message.setText("");
                         break;
                 }
             }
         });
 
     }
-
-    //place le joueur sur une case (x,y)
-    /*public void movePlayer(int x, int y, Rectangle grille [][]){
-        playerX = x;
-        playerY = y;
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 7; j++) {
-                if (i == x && j == y){
-                    grille[i][j].setFill(colorPlayer);
-                }
-            }
-        }
-    }*/
 
     // initialise le plateau avec une grille de 7x7 et un preview des grilles adjacentes
     public void initPlateau(){
@@ -211,21 +200,25 @@ public class PlateauController {
         next_node1.setAlignment(Pos.CENTER);
         next_node2.setAlignment(Pos.CENTER);
         rootPane.setCenter(pane);
-
+        nodeName.setText(" Node " + node);
         switch (this.node){
             case "A" :
+                rootPane.setTop(infos);
                 rootPane.setRight(next_node1);
                 rootPane.setBottom(next_node2);
                 break;
             case "B" :
+                rootPane.setTop(infos);
                 rootPane.setLeft(next_node1);
                 rootPane.setBottom(next_node2);
                 break;
             case "C" :
+                rootPane.setBottom(infos);
                 rootPane.setRight(next_node1);
                 rootPane.setTop(next_node2);
                 break;
             case "D" :
+                rootPane.setBottom(infos);
                 rootPane.setLeft(next_node1);
                 rootPane.setTop(next_node2);
                 break;

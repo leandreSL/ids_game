@@ -33,8 +33,11 @@ public class UIActionVisitor implements ActionVisitor {
 
 	@Override
 	public void visit(PlayerMoves playerMovesMessage) {
-		// TODO Auto-generated method stub
 		Platform.runLater(()->{
+			if (playerMovesMessage.sayHi()){
+				this.ui.score.setText("Score : " + playerMovesMessage.getScore());
+				this.ui.message.setText(playerMovesMessage.getMessage());
+			}
 			for (int i=0; i<7;i++) {
 				for (int j = 0; j < 7; j++) {
 

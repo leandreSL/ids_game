@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -32,6 +33,9 @@ public class MenuController {
     @FXML
     ListView<String> nodes_view;
 
+    @FXML
+    Label exceptionLabel;
+
     final String[] nodes_names = {"A", "B", "C", "D"};
     
     ClientController clientController;
@@ -54,6 +58,7 @@ public class MenuController {
 
     public void adjustMenu(){
         nodes_view.getItems().addAll(nodes_names);
+        nodes_view.getSelectionModel().select("A");
         reglages.setOnMouseClicked((e) ->{
             try {
                 BorderPane pane = FXMLLoader.load(getClass().getResource("reglages.fxml"));
@@ -66,25 +71,40 @@ public class MenuController {
 
         play.setOnMouseClicked((e) ->{
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("plateau.fxml"));
-                BorderPane pane = loader.load();
-                Stage stage = (Stage) rootPane.getScene().getWindow();
-                stage.setScene(new Scene(pane));
-                PlateauController controller = (PlateauController)loader.getController();
                 String selected_node= nodes_view.getSelectionModel().getSelectedItem();
                 String client_name = name.getText();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("plateau.fxml"));
+                BorderPane pane = loader.load();
+                PlateauController controller = (PlateauController)loader.getController();
                 clientController.init(client_name,selected_node, controller);
+                Stage stage = (Stage) rootPane.getScene().getWindow();
+                stage.setScene(new Scene(pane));
+                controller.mainListener(stage,selected_node,clientController);
                 stage.setOnCloseRequest(event->{
                     clientController.disconnect();
                     Platform.exit();
                     System.exit(0);
                 });
-                System.out.println("Name : " + client_name + " / Node : " + selected_node);
-                controller.mainListener(stage,selected_node,clientController);
-                
-                //clientController.init(playerName, nodeName);
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            }catch(IOException exp){
+                try {
+                    String selected_node= nodes_view.getSelectionModel().getSelectedItem();
+                    String client_name = name.getText();
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("plateau.fxml"));
+                    BorderPane pane = loader.load();
+                    PlateauController controller = (PlateauController)loader.getController();
+                    clientController.init(client_name,selected_node, controller);
+                    Stage stage = (Stage) rootPane.getScene().getWindow();
+                    stage.setScene(new Scene(pane));
+                    controller.mainListener(stage,selected_node,clientController);
+                    stage.setOnCloseRequest(event->{
+                        clientController.disconnect();
+                        Platform.exit();
+                        System.exit(0);
+                    });
+                }catch(IOException exp2){
+                    exceptionLabel.setText("Erreur de connexion : reseau");
+                }
+
             }
 
         });

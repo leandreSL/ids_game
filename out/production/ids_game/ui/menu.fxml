@@ -16,6 +16,7 @@
          <children>
             <TextField fx:id="name" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="455.0" promptText="Enter your name" />
             <ListView fx:id="nodes_view" prefHeight="141.0" prefWidth="396.0" />
+            <Label fx:id="exceptionLabel" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                <children>
                   <Button fx:id="reglages" mnemonicParsing="false" text="Réglages" />

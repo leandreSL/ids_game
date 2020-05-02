@@ -15,7 +15,6 @@ public class ClientMain {
 			Client client = new Client(args[0], args[1]);
 		}
 		catch (IOException e) {
-			// TODO : Erreur de connexion : l'afficher au client, lui permettre de réessayer
 			e.printStackTrace();
 			System.out.println(">>> Connection error to the node " + args[1] + " <<<");
 		}

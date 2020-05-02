@@ -13,13 +13,8 @@ public class ClientController {
 		
 	}
 	
-	public void init (String playerName, String nodeName, PlateauController ui) {
-		try {
-			client = new Client(playerName, nodeName);
-		}
-		catch (IOException e) {
-			// Queue du client : �chec de cr�ation
-		}
+	public void init (String playerName, String nodeName, PlateauController ui) throws IOException {
+		client = new Client(playerName, nodeName);
 		
 		client.addActionVisitorObservable(new UIActionVisitor(ui,client.getClientData()));
 	}

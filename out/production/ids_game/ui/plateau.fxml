@@ -3,12 +3,19 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
 <BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.PlateauController">
    <top>
-      <Label fx:id="nodeName" text="Node A" BorderPane.alignment="CENTER">
+      <HBox fx:id="infos" prefHeight="16.0" prefWidth="600.0" spacing="245.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="score" text="Score" />
+            <Label fx:id="nodeName" text="Node" />
+            <Label fx:id="message" />
+         </children>
          <BorderPane.margin>
-            <Insets top="20.0" />
+            <Insets bottom="20.0" top="20.0" />
          </BorderPane.margin>
-      </Label>
+      </HBox>
    </top>
 </BorderPane>
