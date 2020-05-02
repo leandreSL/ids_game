@@ -28,8 +28,8 @@ public class NodeLogger extends Node {
 	}
 
 	@Override
-	protected void initialJoin (Player player) {
-		super.initialJoin(player);
+	protected void initialJoin (Player player, String consumerTag) {
+		super.initialJoin(player, consumerTag);
 		
 		String message = player + " joins zone " + nodeName;
 		
@@ -72,6 +72,16 @@ public class NodeLogger extends Node {
 		super.executeTileAction(tile, player);
 
 		String message = player + " tried to hit the wall " + tile + " !";
+		
+		System.out.println(message);
+		this.log(message);
+	}
+
+	@Override
+	public void disconnect(Player player, String consumerTag) {
+		super.disconnect(player, consumerTag);
+
+		String message = player + " disconnected";
 		
 		System.out.println(message);
 		this.log(message);

@@ -1,9 +1,5 @@
 package core.logger;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-
-import core.TimeoutSetting;
 import core.node.ByteSerializable;
 import share.RabbitWrapper;
 
@@ -17,10 +13,6 @@ public class Logger {
 
 	public static void main(String[] args) {
 		new Logger();
-		
-		CompletableFuture.delayedExecutor(TimeoutSetting.TIMEOUT, TimeUnit.SECONDS).execute(() -> {
-			System.exit(0);
-		});
 	}
 
 	public Logger() {

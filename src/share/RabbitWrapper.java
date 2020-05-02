@@ -17,7 +17,7 @@ public class RabbitWrapper {
 
 	Channel channel;
 
-	public RabbitWrapper() {
+	public RabbitWrapper () throws IOException {
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
 		Connection connection;
@@ -27,12 +27,7 @@ public class RabbitWrapper {
 			channel = connection.createChannel();
 			channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
 		}
-		catch (IOException e) {
-			// TODO
-			e.printStackTrace();
-		}
 		catch (TimeoutException e) {
-			// TODO
 			e.printStackTrace();
 		}
 	}
@@ -52,7 +47,6 @@ public class RabbitWrapper {
 	        channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {});
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

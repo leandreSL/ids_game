@@ -34,9 +34,6 @@ public class Board implements Serializable {
 	public void addPlayer (Player player) {
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
-				
-				// TODO : changer l'impl�mentation ?
-				// TODO : Aussi, v�rifier s'il n'y a pas un joueur dans les parages (pour dire "Bonjour" et inc le compteur)
 				if (tiles[i][j] instanceof TileLand && tiles[i][j].isAvailable()) {
 					((TileLand) tiles[i][j]).player = player;
 					this.playerPositions.put(player, tiles[i][j]);
