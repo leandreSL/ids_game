@@ -1,10 +1,5 @@
 package core.node;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-
-import core.TimeoutSetting;
-
 public class NodeMain {	
 	public static void main (String[] args) {
 		/*
@@ -17,8 +12,5 @@ public class NodeMain {
 		
 		System.out.println("Node " + args[0]);
 		new NodeLogger(args[0], args);
-		CompletableFuture.delayedExecutor(TimeoutSetting.TIMEOUT, TimeUnit.SECONDS).execute(() -> {
-			System.exit(0);
-		});
 	}
 }

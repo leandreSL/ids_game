@@ -1,10 +1,6 @@
 package core.player;
 
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-
-import core.TimeoutSetting;
 
 public class ClientMain {
 	public static void main (String[] args) {
@@ -18,9 +14,5 @@ public class ClientMain {
 			e.printStackTrace();
 			System.out.println(">>> Connection error to the node " + args[1] + " <<<");
 		}
-		
-		CompletableFuture.delayedExecutor(TimeoutSetting.TIMEOUT, TimeUnit.SECONDS).execute(() -> {
-			System.exit(0);
-		});
 	}
 }

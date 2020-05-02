@@ -1,11 +1,9 @@
 package core.player;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
 
 import core.node.ByteSerializable;
 import share.Direction;
@@ -37,36 +35,6 @@ public class Client {
 		this.coreActionVisitor = new CoreActionVisitor(data);
 		this.actionVisitorsObservers = Collections.synchronizedSet(new HashSet<ActionVisitor>());
 		this.network.publish(this.data.getNodeName() + "_join", ByteSerializable.getBytes(this.data.getPlayer()));
-		//tempScenario();
-	}
-	
-	private void tempScenario () {
-		try {
-			System.out.println("Process start");
-			System.out.println("---------- Send join to Node A");
-			this.network.publish(this.data.getNodeName() + "_join", ByteSerializable.getBytes(this.data.getPlayer()));
-			Thread.sleep(5000);
-			
-			System.out.println();
-			System.out.println("---------- Send move");
-			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
-			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
-			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
-			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
-			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
-			Thread.sleep(5000);
-			
-			System.out.println();
-			System.out.println("---------- Send move");
-			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
-			Thread.sleep(5000);
-			
-			System.out.println();
-			System.out.println("---------- Send move");
-			this.network.publish(this.data.getNodeName() + "_move", ByteSerializable.getBytes(new Direction(this.data.getPlayer(), 1, 0)));
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private String initPlayerQueue () throws IOException {
