@@ -30,7 +30,6 @@ import share.board.TileWall;
 public class Node implements TileVisitor {	
 	protected RabbitWrapper network;
 	
-	String[] neighbourNodesName;
 	String nodeName;
 	Board board;
 	
@@ -38,9 +37,8 @@ public class Node implements TileVisitor {
 	Map<Player, PlayerGameData> players_data;
 	
 	
-	public Node (String name, String[] neighbours_node_name) {
+	public Node (String name) {
 		this.nodeName = name;
-		this.neighbourNodesName = neighbours_node_name;
 		
 		try {
 			// Instantiate the associated board
@@ -108,6 +106,21 @@ public class Node implements TileVisitor {
         		this.receivePlayerChangeNode(player);
         	}
         });
+        
+        // For the players to disconnect
+        network.createQueueAndListen(this.nodeName + "_disconnect", (consumerTag, delivery) -> {
+    		PlayerGameData player = (PlayerGameData) ByteSerializable.fromBytes(delivery.getBody());
+    		if (player == null) {
+    			// TODO : on fait quoi ?
+    			return;
+    		}
+    		
+        	synchronized (this) {
+        		this.disconnect(player.getPlayer());
+        	}
+        });
+        
+        
 	}
 
 	
@@ -206,13 +219,15 @@ public class Node implements TileVisitor {
 		return;
 	}
 	
+	/**
+	 * Make the player change zone, sending the information to all the other players
+	 */
 	@Override
 	public void executeTileAction(TileChangeZone tile, Player player) {
 		PlayerGameData playerGameData = this.players_data.get(player);
 		
 		try {
 			ActionMessage action = new UpdateTile(board.getPlayerTile(player));
-			
 			
 			this.makePlayerChangeNode(player, playerGameData, tile.getDestinationNode());
 
@@ -284,4 +299,12 @@ public class Node implements TileVisitor {
 		}
 	}
 
+	private void disconnect (Player player) {
+		this.players_list.remove(player);
+		this.players_data.remove(player);
+		this.board.removePlayer(player);
+
+		ActionMessage action = new UpdateTile(board.getPlayerTile(player));
+		this.broadcastPlayers(action, player);
+	}
 }

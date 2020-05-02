@@ -14,7 +14,7 @@ public class NodeLogger extends Node {
 	DateTimeFormatter timeFormatter;
 
 	public NodeLogger (String name, String[] neighbours_node_name) {
-		super(name, neighbours_node_name);
+		super(name);
 		timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	}
 
