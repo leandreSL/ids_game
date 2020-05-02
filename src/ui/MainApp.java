@@ -1,6 +1,8 @@
 package ui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -34,6 +36,12 @@ public class MainApp extends Application {
             // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
+
+            primaryStage.setOnCloseRequest(e->{
+                Platform.exit();
+                System.exit(0);
+            });
+
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();

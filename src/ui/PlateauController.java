@@ -1,5 +1,6 @@
 package ui;
 
+import core.player.ClientController;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Random;
 
 
@@ -44,6 +46,8 @@ public class PlateauController {
     Color colorNextNode1;
     Color colorNextNode2;
     Color colorPlayer;
+
+    ClientController clientCtrl;
 
     public PlateauController() {
 
@@ -102,10 +106,11 @@ public class PlateauController {
     }
 
     //fonction "moteur" qui gère les évènements des touches
-    public void mainListener(Stage stage, String nodeN) {
+    public void mainListener(Stage stage, String nodeN, ClientController ctrl) {
         scene = stage.getScene();
         this.node = nodeN;
         this.nodeName.setText(nodeN);
+        this.clientCtrl = ctrl;
 
         adjustNodes();
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -118,8 +123,10 @@ public class PlateauController {
                         if (playerX > 0) {
                             grille[playerX][playerY].setFill(colorNode);
                             playerX--;
+                            clientCtrl.move(0,1);
                             grille[playerX][playerY].setFill(colorPlayer);
                         }else{
+                            //changement de noeud
                             if (node.equals("nodeC") || node.equals("nodeD")){
                                 node = nextNode2;
                                 rootPane.getChildren().clear();
@@ -134,9 +141,11 @@ public class PlateauController {
                         if (playerY > 0) {
                             grille[playerX][playerY].setFill(colorNode);
                             playerY--;
+                            clientCtrl.move(-1,0);
                             grille[playerX][playerY].setFill(colorPlayer);
                         }
                         else{
+                            //changement de noeud
                             if (node.equals("nodeB") || node.equals("nodeD")){
                                 node = nextNode1;
                                 rootPane.getChildren().clear();
@@ -151,8 +160,10 @@ public class PlateauController {
                         if (playerX < 6) {
                             grille[playerX][playerY].setFill(colorNode);
                             playerX++;
+                            clientCtrl.move(0,-1);
                             grille[playerX][playerY].setFill(colorPlayer);
                         }else{
+                            //changement de noeud
                             if (node.equals("nodeA") || node.equals("nodeB")){
                                 node = nextNode2;
                                 rootPane.getChildren().clear();
@@ -167,9 +178,11 @@ public class PlateauController {
                         if (playerY < 6) {
                             grille[playerX][playerY].setFill(colorNode);
                             playerY++;
+                            clientCtrl.move(1,0);
                             grille[playerX][playerY].setFill(colorPlayer);
                         }
                         else{
+                            //changement de noeud
                             if (node.equals("nodeA") || node.equals("nodeC")){
                                 node = nextNode1;
                                 rootPane.getChildren().clear();

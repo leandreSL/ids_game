@@ -71,9 +71,16 @@ public class MenuController {
                 Stage stage = (Stage) rootPane.getScene().getWindow();
                 stage.setScene(new Scene(pane));
                 PlateauController controller = (PlateauController)loader.getController();
-                Random random = new Random();
-                int index = random.nextInt(nodes_names.length);
-                controller.mainListener(stage,nodes_names[index]);
+                String selected_node= nodes_view.getSelectionModel().getSelectedItem();
+                String client_name = name.getText();
+                clientController.init(client_name,selected_node);
+                stage.setOnCloseRequest(event->{
+                    System.out.println("TODO : déconnexion");
+                    Platform.exit();
+                    System.exit(0);
+                });
+                System.out.println("Name : " + client_name + " / Node : " + selected_node);
+                controller.mainListener(stage,selected_node,clientController);
                 
                 //clientController.init(playerName, nodeName);
             } catch (IOException ex) {

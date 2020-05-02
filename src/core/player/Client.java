@@ -36,8 +36,8 @@ public class Client {
 		
 		this.coreActionVisitor = new CoreActionVisitor(data);
 		this.actionVisitorsObservers = Collections.synchronizedSet(new HashSet<ActionVisitor>());
-		
-		tempScenario();
+		this.network.publish(this.data.getNodeName() + "_join", ByteSerializable.getBytes(this.data.getPlayer()));
+		//tempScenario();
 	}
 	
 	private void tempScenario () {

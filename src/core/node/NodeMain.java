@@ -17,7 +17,6 @@ public class NodeMain {
 		
 		System.out.println("Node " + args[0]);
 		new NodeLogger(args[0], args);
-		
 		CompletableFuture.delayedExecutor(TimeoutSetting.TIMEOUT, TimeUnit.SECONDS).execute(() -> {
 			System.exit(0);
 		});

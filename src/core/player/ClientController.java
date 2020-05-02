@@ -2,6 +2,7 @@ package core.player;
 
 import java.io.IOException;
 
+import share.Direction;
 import ui.UIActionVisitor;
 
 public class ClientController {
@@ -16,9 +17,18 @@ public class ClientController {
 			client = new Client(playerName, nodeName);
 		}
 		catch (IOException e) {
-			// Queue du client : échec de création
+			// Queue du client : ï¿½chec de crï¿½ation
 		}
 		
 		client.addActionVisitorObservable(new UIActionVisitor());
+	}
+
+	public void move(int horizontalD, int verticalD)  {
+		try {
+			this.client.move(horizontalD,verticalD);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		;
 	}
 }
