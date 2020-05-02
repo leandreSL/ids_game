@@ -12,12 +12,11 @@ public class PlayerGameData implements Serializable {
 
 	private final Player player;
 	private final Set<Player> playersEncountered;
-	private final String consumerTag; // Unique ID provided by RabbitMQ
 
-	public PlayerGameData(Player player, String consumerTag) {
+	public PlayerGameData(Player player) {
 		this.player = player;
 		this.playersEncountered = new HashSet<>();
-		this.consumerTag = consumerTag;
+
 	}
 
 	public Player getPlayer() {
@@ -27,10 +26,7 @@ public class PlayerGameData implements Serializable {
 	public String getId () {
 		return this.player.getId();
 	}
-	
-	public String getConsumerTag() {
-		return consumerTag;
-	}
+
 
 	/**
 	 * Add all the players nearby to the list of all the players encountered.

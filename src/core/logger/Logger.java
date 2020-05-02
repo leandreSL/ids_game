@@ -3,6 +3,8 @@ package core.logger;
 import core.node.ByteSerializable;
 import share.RabbitWrapper;
 
+import java.io.IOException;
+
 /**
  * Logs in the standard output the messages received from the NodeLogger instances.
  */
@@ -17,7 +19,11 @@ public class Logger {
 
 	public Logger() {
 
-		this.network = new RabbitWrapper();
+		try {
+			this.network = new RabbitWrapper();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		this.network.createQueueAndListen(LOGGER_QUEUE_NAME, (consumerTag, delivery) -> {
 				String message = (String) ByteSerializable.fromBytes(delivery.getBody());
 				System.out.println(message);

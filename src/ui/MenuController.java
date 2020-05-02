@@ -79,6 +79,8 @@ public class MenuController {
                 clientController.init(client_name,selected_node, controller);
                 Stage stage = (Stage) rootPane.getScene().getWindow();
                 stage.setScene(new Scene(pane));
+                stage.setMinHeight(500);
+                stage.setMinWidth(700);
                 controller.mainListener(stage,selected_node,clientController);
                 stage.setOnCloseRequest(event->{
                     clientController.disconnect();
@@ -95,6 +97,8 @@ public class MenuController {
                     clientController.init(client_name,selected_node, controller);
                     Stage stage = (Stage) rootPane.getScene().getWindow();
                     stage.setScene(new Scene(pane));
+                    stage.setMinWidth(700);
+                    stage.setMinHeight(500);
                     controller.mainListener(stage,selected_node,clientController);
                     stage.setOnCloseRequest(event->{
                         clientController.disconnect();

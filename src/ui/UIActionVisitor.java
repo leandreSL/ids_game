@@ -64,11 +64,6 @@ public class UIActionVisitor implements ActionVisitor {
 	@Override
 	public void visit(UpdateBoard updateBoardMessage) {
 		Tile [][] board = updateBoardMessage.getBoard().getTiles();
-		for (int i=0; i<board.length;i++) {
-			for (int j = 0; j < board.length; j++) {
-				System.out.println(board[j][i]);
-			}
-		}
 		Platform.runLater(()->{
 			this.ui.initPlateau();
 			for (int i=0; i<board.length;i++){

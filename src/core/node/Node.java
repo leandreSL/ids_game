@@ -80,7 +80,7 @@ public class Node implements TileVisitor {
     		}
     		
         	synchronized (this) {
-            	this.initialJoin(player, consumerTag);
+            	this.initialJoin(player);
         	}
         });
         
@@ -116,7 +116,7 @@ public class Node implements TileVisitor {
     		}
     		
         	synchronized (this) {
-        		this.disconnect(player, consumerTag);
+        		this.disconnect(player);
         	}
         });
         
@@ -128,12 +128,12 @@ public class Node implements TileVisitor {
 	 * When the player joins the game
 	 * @param player
 	 */
-	protected void initialJoin (Player player, String consumerTag) {
+	protected void initialJoin (Player player) {
 		if (this.players_list.contains(player)) return;
 		
 		board.addPlayer(player);
 		this.players_list.add(player);
-		this.players_data.put(player, new PlayerGameData(player, consumerTag));
+		this.players_data.put(player, new PlayerGameData(player));
 		this.join(player);
 	}
 
@@ -239,9 +239,8 @@ public class Node implements TileVisitor {
 			this.board.removePlayer(player);
 
 			this.broadcastPlayers(action, player);
-			
-			action = new ChangeZone(tile.getDestinationNode());
-			this.sendActionMessageTo(player, action);
+
+
 		}
 		catch (IOException e) {
 			// TODO Si le noeud n'existe pas ? ( = pas d'instance active)
@@ -302,9 +301,7 @@ public class Node implements TileVisitor {
 		}
 	}
 
-	protected void disconnect (Player player, String consumerTag) {
-		String playerConsumerTag = this.players_data.get(player).getConsumerTag();
-		if (!consumerTag.equals(playerConsumerTag)) return; // Check that the player itself ask to disconnect
+	protected void disconnect (Player player) {
 		
 		this.players_list.remove(player);
 		this.players_data.remove(player);
