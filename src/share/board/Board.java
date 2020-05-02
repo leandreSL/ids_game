@@ -14,6 +14,8 @@ import share.Player;
 public class Board implements Serializable {
 	final int height;
 	final int width;
+
+
 	final Tile[][] tiles;
 	
 	final Map<Player, Tile> playerPositions;
@@ -33,8 +35,8 @@ public class Board implements Serializable {
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
 				
-				// TODO : changer l'implémentation ?
-				// TODO : Aussi, vérifier s'il n'y a pas un joueur dans les parages (pour dire "Bonjour" et inc le compteur)
+				// TODO : changer l'implï¿½mentation ?
+				// TODO : Aussi, vï¿½rifier s'il n'y a pas un joueur dans les parages (pour dire "Bonjour" et inc le compteur)
 				if (tiles[i][j] instanceof TileLand && tiles[i][j].isAvailable()) {
 					((TileLand) tiles[i][j]).player = player;
 					this.playerPositions.put(player, tiles[i][j]);
@@ -131,4 +133,9 @@ public class Board implements Serializable {
 			return;
 		}
 	}
+
+	public Tile[][] getTiles() {
+		return tiles;
+	}
+
 }

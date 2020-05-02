@@ -73,9 +73,9 @@ public class MenuController {
                 PlateauController controller = (PlateauController)loader.getController();
                 String selected_node= nodes_view.getSelectionModel().getSelectedItem();
                 String client_name = name.getText();
-                clientController.init(client_name,selected_node);
+                clientController.init(client_name,selected_node, controller);
                 stage.setOnCloseRequest(event->{
-                    System.out.println("TODO : déconnexion");
+                    clientController.disconnect();
                     Platform.exit();
                     System.exit(0);
                 });

@@ -3,6 +3,7 @@ package core.player;
 import java.io.IOException;
 
 import share.Direction;
+import ui.PlateauController;
 import ui.UIActionVisitor;
 
 public class ClientController {
@@ -12,7 +13,7 @@ public class ClientController {
 		
 	}
 	
-	public void init (String playerName, String nodeName) {
+	public void init (String playerName, String nodeName, PlateauController ui) {
 		try {
 			client = new Client(playerName, nodeName);
 		}
@@ -20,7 +21,7 @@ public class ClientController {
 			// Queue du client : �chec de cr�ation
 		}
 		
-		client.addActionVisitorObservable(new UIActionVisitor());
+		client.addActionVisitorObservable(new UIActionVisitor(ui,client.getClientData()));
 	}
 
 	public void move(int horizontalD, int verticalD)  {
@@ -29,6 +30,15 @@ public class ClientController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		;
+
+	}
+
+	public void disconnect(){
+		try {
+			this.client.disconnect();
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 }

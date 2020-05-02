@@ -32,6 +32,15 @@ public class TileLand extends Tile {
 	
 	@Override
 	public String toString () {
-		return "[tile:" + x + "," + y + "," + player.getName() + "]";
+		if (player != null){
+			return "[tile:" + x + "," + y + "," + player.getName() + "]";
+		}else {
+			return "[tile:" + x + "," + y + "]";
+		}
+
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 }

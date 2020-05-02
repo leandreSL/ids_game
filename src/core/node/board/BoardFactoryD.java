@@ -16,7 +16,7 @@ public class BoardFactoryD implements BoardFactory {
 		
 
 		for (y = 0; y < height; y++) {
-			for (x = 1; x < width; x++) {
+			for (x = 0; x < width; x++) {
 				tiles[y][x] = new TileLand(x, y);
 			}
 		}
@@ -24,9 +24,9 @@ public class BoardFactoryD implements BoardFactory {
 
 		x = 3;
 		y = 0;
-		tiles[y][x] = new TileChangeZone(x, y, "A");
+		tiles[y][x] = new TileChangeZone(x, y, "B");
 		
-		x = width-1;
+		x = 0;
 		y = 3;
 		tiles[y][x] = new TileChangeZone(x, y, "C");
 		

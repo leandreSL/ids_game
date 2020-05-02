@@ -31,11 +31,12 @@ public class PlateauController {
 
     Rectangle grille [][];
     Scene scene;
-    String node ="";
+    private String node ="";
 
 
-    int playerX;
-    int playerY;
+
+    //int playerX;
+    //int playerY;
 
     String nextNode1;
     String nextNode2;
@@ -46,6 +47,7 @@ public class PlateauController {
     Color colorNextNode1;
     Color colorNextNode2;
     Color colorPlayer;
+    Color colorOthersPlayers;
 
     ClientController clientCtrl;
 
@@ -53,14 +55,25 @@ public class PlateauController {
 
     }
 
+    public Color getColorNode() {
+        return colorNode;
+    }
+
+    public Color getColorPlayer() {
+        return colorPlayer;
+    }
+
+    public Color getColorOthersPlayers() {
+        return colorOthersPlayers;
+    }
+
     @FXML
     private void initialize() {
         Platform.runLater(() -> {
-            initPlateau();
-            Random random = new Random();
-            playerX = random.nextInt(6);
-            playerY = random.nextInt(6);
-            movePlayer(playerX,playerY,grille);
+            //initPlateau();
+            //playerX = 0;
+            //playerY = 0;
+            //movePlayer(playerX,playerY,grille);
         });
 
     }
@@ -68,37 +81,38 @@ public class PlateauController {
     //fixe les nodes adjacents en fonction du node courant, et aussi les couleurs
     public void adjustNodes(){
         colorPlayer = Color.PURPLE;
+        colorOthersPlayers = Color.LIGHTGRAY;
         switch (this.node){
-            case "nodeA" :
+            case "A" :
                 colorNode = Color.DARKGOLDENROD;
                 colorNextNode1 = Color.GREEN;
                 colorNextNode2 = Color.BROWN;
-                nextNode1 = "nodeB";
-                nextNode2 = "nodeC";
+                nextNode1 = "B";
+                nextNode2 = "C";
                 inMainNode = new Insets(10, 0, 10, 50);
                 break;
-            case "nodeB" :
+            case "B" :
                 colorNode = Color.GREEN;
                 colorNextNode1 = Color.DARKGOLDENROD;
                 colorNextNode2 = Color.BLUE;
-                nextNode1 = "nodeA";
-                nextNode2 = "nodeD";
+                nextNode1 = "A";
+                nextNode2 = "D";
                 inMainNode = new Insets(10, 50, 10, 0);
                 break;
-            case "nodeC" :
+            case "C" :
                 colorNode = Color.BROWN;
                 colorNextNode1 = Color.BLUE;
                 colorNextNode2 = Color.DARKGOLDENROD;
-                nextNode1 = "nodeD";
-                nextNode2 = "nodeA";
+                nextNode1 = "D";
+                nextNode2 = "A";
                 inMainNode = new Insets(10, 0, 10, 50);
                 break;
-            case "nodeD" :
+            case "D" :
                 colorNode = Color.BLUE;
                 colorNextNode1 = Color.BROWN;
                 colorNextNode2 = Color.GREEN;
-                nextNode1 = "nodeC";
-                nextNode2 = "nodeB";
+                nextNode1 = "C";
+                nextNode2 = "B";
                 inMainNode = new Insets(10, 50, 10, 0);
                 break;
         }
@@ -120,77 +134,19 @@ public class PlateauController {
                 switch (event.getCode()) {
                     case Z:
                     case UP:
-                        if (playerX > 0) {
-                            grille[playerX][playerY].setFill(colorNode);
-                            playerX--;
-                            clientCtrl.move(0,1);
-                            grille[playerX][playerY].setFill(colorPlayer);
-                        }else{
-                            //changement de noeud
-                            if (node.equals("nodeC") || node.equals("nodeD")){
-                                node = nextNode2;
-                                rootPane.getChildren().clear();
-                                adjustNodes();
-                                initPlateau();
-                                movePlayer(6,playerY,grille);
-                            }
-                        }
+                        clientCtrl.move(0,-1);
                         break;
                     case Q:
                     case LEFT:
-                        if (playerY > 0) {
-                            grille[playerX][playerY].setFill(colorNode);
-                            playerY--;
-                            clientCtrl.move(-1,0);
-                            grille[playerX][playerY].setFill(colorPlayer);
-                        }
-                        else{
-                            //changement de noeud
-                            if (node.equals("nodeB") || node.equals("nodeD")){
-                                node = nextNode1;
-                                rootPane.getChildren().clear();
-                                adjustNodes();
-                                initPlateau();
-                                movePlayer(playerX,6,grille);
-                            }
-                        }
+                        clientCtrl.move(-1,0);
                         break;
                     case S :
                     case DOWN:
-                        if (playerX < 6) {
-                            grille[playerX][playerY].setFill(colorNode);
-                            playerX++;
-                            clientCtrl.move(0,-1);
-                            grille[playerX][playerY].setFill(colorPlayer);
-                        }else{
-                            //changement de noeud
-                            if (node.equals("nodeA") || node.equals("nodeB")){
-                                node = nextNode2;
-                                rootPane.getChildren().clear();
-                                adjustNodes();
-                                initPlateau();
-                                movePlayer(0,playerY,grille);
-                            }
-                        }
+                        clientCtrl.move(0,1);
                         break;
                     case D:
                     case RIGHT:
-                        if (playerY < 6) {
-                            grille[playerX][playerY].setFill(colorNode);
-                            playerY++;
-                            clientCtrl.move(1,0);
-                            grille[playerX][playerY].setFill(colorPlayer);
-                        }
-                        else{
-                            //changement de noeud
-                            if (node.equals("nodeA") || node.equals("nodeC")){
-                                node = nextNode1;
-                                rootPane.getChildren().clear();
-                                adjustNodes();
-                                initPlateau();
-                                movePlayer(playerX,0,grille);
-                            }
-                        }
+                        clientCtrl.move(1,0);
                         break;
                 }
             }
@@ -199,7 +155,7 @@ public class PlateauController {
     }
 
     //place le joueur sur une case (x,y)
-    public void movePlayer(int x, int y, Rectangle grille [][]){
+    /*public void movePlayer(int x, int y, Rectangle grille [][]){
         playerX = x;
         playerY = y;
         for (int i = 0; i < 7; i++) {
@@ -209,7 +165,7 @@ public class PlateauController {
                 }
             }
         }
-    }
+    }*/
 
     // initialise le plateau avec une grille de 7x7 et un preview des grilles adjacentes
     public void initPlateau(){
@@ -257,24 +213,30 @@ public class PlateauController {
         rootPane.setCenter(pane);
 
         switch (this.node){
-            case "nodeA" :
-
+            case "A" :
                 rootPane.setRight(next_node1);
                 rootPane.setBottom(next_node2);
                 break;
-            case "nodeB" :
+            case "B" :
                 rootPane.setLeft(next_node1);
                 rootPane.setBottom(next_node2);
                 break;
-            case "nodeC" :
+            case "C" :
                 rootPane.setRight(next_node1);
                 rootPane.setTop(next_node2);
                 break;
-            case "nodeD" :
+            case "D" :
                 rootPane.setLeft(next_node1);
                 rootPane.setTop(next_node2);
                 break;
         }
     }
 
+    public String getNode() {
+        return node;
+    }
+
+    public void setNode(String node) {
+        this.node = node;
+    }
 }

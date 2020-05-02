@@ -29,7 +29,7 @@ public class BoardFactoryA implements BoardFactory {
 		
 		y = height - 1;
 		for (x = 0; x < width-1; x++) {
-			tiles[y][x] = new TileChangeZone(x, y, "D");
+			tiles[y][x] = new TileChangeZone(x, y, "C");
 		}
 		
 		x = width-1;

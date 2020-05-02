@@ -42,9 +42,11 @@ public class Node implements TileVisitor {
 		
 		try {
 			// Instantiate the associated board
-			Class<?> boardFactoryClass = Class.forName("BoardFactory" + name);
+			Class<?> boardFactoryClass = Class.forName("core.node.board.BoardFactory" + name);
+			System.out.println("On est ici");
 			Constructor<?> boardFactoryConstructor = boardFactoryClass.getConstructor();
 			this.board = ((BoardFactory) boardFactoryConstructor.newInstance()).createBoard();
+			System.out.println("NODE " + this.board.getTiles()[5][5]);
 		}
 		catch (Exception e) {
 			try {
@@ -109,14 +111,14 @@ public class Node implements TileVisitor {
         
         // For the players to disconnect
         network.createQueueAndListen(this.nodeName + "_disconnect", (consumerTag, delivery) -> {
-    		PlayerGameData player = (PlayerGameData) ByteSerializable.fromBytes(delivery.getBody());
+    		Player player = (Player) ByteSerializable.fromBytes(delivery.getBody());
     		if (player == null) {
     			// TODO : on fait quoi ?
     			return;
     		}
     		
         	synchronized (this) {
-        		this.disconnect(player.getPlayer());
+        		this.disconnect(player);
         	}
         });
         
@@ -143,7 +145,7 @@ public class Node implements TileVisitor {
 		
 		Player player = playerGameData.getPlayer();
 
-		// TODO : stratégie de placement différent quand le joueur provient d'un noeud voisin ?
+		// TODO : stratï¿½gie de placement diffï¿½rent quand le joueur provient d'un noeud voisin ?
 		board.addPlayer(player);
 		this.players_list.add(player);
 		this.players_data.put(player, playerGameData);
@@ -156,7 +158,7 @@ public class Node implements TileVisitor {
 			this.sendActionMessageTo(player, action);
 		}
 		catch (IOException e) {
-			// TODO supprimer le playeur du jeu et le déconnecter ?
+			// TODO supprimer le playeur du jeu et le dï¿½connecter ?
 			e.printStackTrace();
 		}
 		
@@ -168,7 +170,7 @@ public class Node implements TileVisitor {
 		Player player = direction.getPlayer();
 		
 		if (player == null || !this.players_list.contains(player) || !direction.isValid()) {
-			// TODO : si le player n'est pas dans la zone (hackeur méchant pas gentil)
+			// TODO : si le player n'est pas dans la zone (hackeur mï¿½chant pas gentil)
 			// ou si la direction n'est pas valide
 			return;
 		}
@@ -187,10 +189,11 @@ public class Node implements TileVisitor {
 	 * Check
 	 */
 	@Override
-	public void executeTileAction(TileLand destinationTile, Player player) {		
+	public void executeTileAction(TileLand destinationTile, Player player) {
+		TileLand oldTile = board.getPlayerTile(player);
 		board.movePlayerToTile(player, destinationTile);
-		PlayerMoves action = new PlayerMoves(board.getPlayerTile(player), destinationTile);
-		
+		PlayerMoves action = new PlayerMoves(oldTile, board.getPlayerTile(player));
+
 		/*
 		 * Get the players nearby the player after he moves
 		 * If there are at least 1 :
@@ -247,8 +250,8 @@ public class Node implements TileVisitor {
 	}
 
 	
-	/// TODO : Attendre une réponse positive de réception ?
-	// Ou seulement vérifier que la queue est up ?
+	/// TODO : Attendre une rï¿½ponse positive de rï¿½ception ?
+	// Ou seulement vï¿½rifier que la queue est up ?
 	private void makePlayerChangeNode (Player player, PlayerGameData playerGameData, String destinationNode) throws IOException {
 		// Make the player join the new node
 		network.publish(destinationNode + "_change_node", ByteSerializable.getBytes(playerGameData));

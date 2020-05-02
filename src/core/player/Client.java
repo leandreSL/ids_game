@@ -121,4 +121,9 @@ public class Client {
 		this.network.publish(topic, ByteSerializable.getBytes(new Direction(this.data.getPlayer(), horizontalDirection, verticalDirection)));
 	}
 
+	public void disconnect () throws IOException {
+		String topic = this.data.getNodeName() + "_disconnect";
+		this.network.publish(topic, ByteSerializable.getBytes(this.data.getPlayer()));
+	}
+
 }
