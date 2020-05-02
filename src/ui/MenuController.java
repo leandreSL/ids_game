@@ -32,7 +32,7 @@ public class MenuController {
     @FXML
     ListView<String> nodes_view;
 
-    final String[] nodes_names = {"nodeA", "nodeB", "nodeC", "nodeD"};
+    final String[] nodes_names = {"A", "B", "C", "D"};
     
     ClientController clientController;
 
