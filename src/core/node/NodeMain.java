@@ -19,7 +19,7 @@ public class NodeMain {
 		try {
 			line = cliParser.parse(options, args);
 		} catch (ParseException e) {
-			System.err.println("Erreur : vérifiez la syntaxe des arguments");
+			System.err.println("Erreur : verifiez la syntaxe des arguments");
 			return;
 		}
 		
@@ -60,8 +60,8 @@ public class NodeMain {
 			System.err.println("verifiez que le serveur associe a l'URI suivante existe bien :");
 			System.err.println(line.getOptionValue("uri"));
 			return;
-		}	
-
+		}
+		
 		System.out.println("Node " + args[0]);
 	}
 	

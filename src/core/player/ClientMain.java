@@ -10,7 +10,7 @@ public class ClientMain {
 		try {
 			Client client = new Client(args[0], args[1]);
 		}
-		catch (IOException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(">>> Connection error to the node " + args[1] + " <<<");
 		}

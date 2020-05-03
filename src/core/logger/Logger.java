@@ -4,6 +4,9 @@ import core.share.ByteSerializable;
 import core.share.RabbitWrapper;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Logs in the standard output the messages received from the NodeLogger instances.
@@ -14,22 +17,24 @@ public class Logger {
 	private RabbitWrapper network;
 
 	public static void main(String[] args) {
-		new Logger();
+		new Logger(args);
 	}
 
-	public Logger() {
+	public Logger(String[] args) {
+    	if (args.length == 1) RabbitWrapper.setURI(args[0]);
 		try {
 			this.network = new RabbitWrapper();
-					
-			this.network.createQueueAndListen(LOGGER_QUEUE_NAME, (consumerTag, delivery) -> {
-				String message = (String) ByteSerializable.fromBytes(delivery.getBody());
-				System.out.println(message);
-			});
-			
-			System.out.println("Logger");
 		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
+		catch (Exception e) {
+			System.err.println("Echec de la connection a RabbitMQ,");
+			return;
+		}	
+				
+		this.network.createQueueAndListen(LOGGER_QUEUE_NAME, (consumerTag, delivery) -> {
+			String message = (String) ByteSerializable.fromBytes(delivery.getBody());
+			System.out.println(message);
+		});
+		
+		System.out.println("Logger");
 	}
 }
