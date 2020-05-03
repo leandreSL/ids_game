@@ -23,7 +23,7 @@ public class ReglageController {
     private void initialize() {
         retour.setOnMouseClicked((e) ->{
             try {
-                BorderPane pane = FXMLLoader.load(getClass().getResource("menu.fxml"));
+                BorderPane pane = FXMLLoader.load(getClass().getResource("../resources/menu.fxml"));
                 rootPane.getChildren().setAll(pane);
             } catch (IOException ex) {
                 ex.printStackTrace();

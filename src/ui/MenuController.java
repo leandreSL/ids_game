@@ -12,7 +12,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Random;
 
 import core.player.ClientController;
 
@@ -61,7 +60,7 @@ public class MenuController {
         nodes_view.getSelectionModel().select("A");
         reglages.setOnMouseClicked((e) ->{
             try {
-                BorderPane pane = FXMLLoader.load(getClass().getResource("reglages.fxml"));
+                BorderPane pane = FXMLLoader.load(getClass().getResource("../reglages.fxml"));
                 rootPane.getChildren().setAll(pane);
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -73,7 +72,7 @@ public class MenuController {
             try {
                 String selected_node= nodes_view.getSelectionModel().getSelectedItem();
                 String client_name = name.getText();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("plateau.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("../plateau.fxml"));
                 BorderPane pane = loader.load();
                 PlateauController controller = (PlateauController)loader.getController();
                 clientController.init(client_name,selected_node, controller);
@@ -91,7 +90,7 @@ public class MenuController {
                 try {
                     String selected_node= nodes_view.getSelectionModel().getSelectedItem();
                     String client_name = name.getText();
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("plateau.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("../plateau.fxml"));
                     BorderPane pane = loader.load();
                     PlateauController controller = (PlateauController)loader.getController();
                     clientController.init(client_name,selected_node, controller);

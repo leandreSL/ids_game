@@ -20,4 +20,4 @@ clean:
 	mvn clean
 
 javafx:
-	mvn javafx:run -Dexec.args="$(args)"
+	mvn resources:resources javafx:run -Dexec.args="$(args)"

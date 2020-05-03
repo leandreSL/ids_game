@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="Client" />
+    </artifacts-to-build>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c6c4f9e2-973a-4d97-9da0-95b28b71409a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/MainApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/MainApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/MenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/MenuController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/ReglageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/ReglageController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/menu.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/plateau.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/reglages.fxml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="$PROJECT_DIR$/.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1aJ69Lrvfljsjen9eYns3gg9ufX" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.JavaFX" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/resources" />
+      <recent name="$PROJECT_DIR$/src/ui" />
+      <recent name="$PROJECT_DIR$/src/ui/resources" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources" />
+      <recent name="$PROJECT_DIR$/src/ui" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.MainApp">
+    <configuration name="ClientMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="core.player.ClientMain" />
+      <module name="ids_game" />
+      <option name="PROGRAM_PARAMETERS" value="bonjour nodeA" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="core.player.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HelloFX" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ui.HelloFX" />
+      <module name="ids_game" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Logger" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="core.logger.Logger" />
+      <module name="ids_game" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="core.logger.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MainApp" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ui.MainApp" />
+      <module name="ids_game" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NodeA" type="Application" factoryName="Application" singleton="false" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="core.node.NodeMain" />
+      <module name="ids_game" />
+      <option name="PROGRAM_PARAMETERS" value="A B C" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="core.node.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="nodeB" type="Application" factoryName="Application" singleton="false">
+      <option name="MAIN_CLASS_NAME" value="core.node.NodeMain" />
+      <module name="ids_game" />
+      <option name="PROGRAM_PARAMETERS" value="B A C" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="nodeC" type="Application" factoryName="Application" singleton="false">
+      <option name="MAIN_CLASS_NAME" value="core.node.NodeMain" />
+      <module name="ids_game" />
+      <option name="PROGRAM_PARAMETERS" value="C B D" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="nodeD" type="Application" factoryName="Application" singleton="false">
+      <option name="MAIN_CLASS_NAME" value="core.node.NodeMain" />
+      <module name="ids_game" />
+      <option name="PROGRAM_PARAMETERS" value="D C A" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.nodeD" />
+      <item itemvalue="Application.nodeB" />
+      <item itemvalue="Application.nodeC" />
+      <item itemvalue="Application.HelloFX" />
+      <item itemvalue="Application.MainApp" />
+      <item itemvalue="Application.NodeA" />
+      <item itemvalue="Application.ClientMain" />
+      <item itemvalue="Application.Logger" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.MainApp" />
+        <item itemvalue="Application.NodeA" />
+        <item itemvalue="Application.ClientMain" />
+        <item itemvalue="Application.Logger" />
+        <item itemvalue="Application.HelloFX" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c6c4f9e2-973a-4d97-9da0-95b28b71409a" name="Default Changelist" comment="" />
+      <created>1586441200097</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1586441200097</updated>
+      <workItem from="1586441215438" duration="808000" />
+      <workItem from="1587029050078" duration="3149000" />
+      <workItem from="1587038854689" duration="2576000" />
+      <workItem from="1587286997722" duration="1095000" />
+      <workItem from="1587457578495" duration="373000" />
+      <workItem from="1587635691450" duration="673000" />
+      <workItem from="1587737842378" duration="1600000" />
+      <workItem from="1588080974913" duration="1633000" />
+      <workItem from="1588344765692" duration="10286000" />
+      <workItem from="1588421490132" duration="18816000" />
+      <workItem from="1588497384932" duration="8166000" />
+      <workItem from="1588518170136" duration="7000" />
+      <workItem from="1588521045316" duration="95000" />
+      <workItem from="1588521166465" duration="879000" />
+      <workItem from="1588522472506" duration="97000" />
+      <workItem from="1588522596072" duration="637000" />
+      <workItem from="1588534079697" duration="275000" />
+      <workItem from="1588534381683" duration="2279000" />
+      <workItem from="1588539760819" duration="96000" />
+      <workItem from="1588540846757" duration="829000" />
+    </task>
+    <task id="LOCAL-00001" summary="init commit">
+      <created>1586441401703</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1586441401703</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="init commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="init commit" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="555" y="181" width="800" height="677" key="#Project_Structure" timestamp="1588534216468">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="555" y="181" width="800" height="677" key="#Project_Structure/0.27.1920.988@0.27.1920.988" timestamp="1588534216467" />
+    <state x="225" y="119" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588430666062">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="225" y="119" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.1920.988@0.27.1920.988" timestamp="1588430666062" />
+    <state x="696" y="357" width="518" height="325" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog" timestamp="1588507515535">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="696" y="357" width="518" height="325" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog/0.27.1920.988@0.27.1920.988" timestamp="1588507515535" />
+    <state x="768" y="224" width="374" height="592" key="#com.intellij.ide.util.MemberChooser" timestamp="1588425764449">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="768" y="224" width="374" height="592" key="#com.intellij.ide.util.MemberChooser/0.27.1920.988@0.27.1920.988" timestamp="1588425764449" />
+    <state x="707" y="263" width="525" height="428" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1588507635681">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="707" y="263" width="525" height="428" key="#com.intellij.ide.util.TreeClassChooserDialog/0.27.1920.988@0.27.1920.988" timestamp="1588507635681" />
+    <state x="801" y="412" width="308" height="216" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1588521178360">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="801" y="412" width="308" height="216" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.27.1920.988@0.27.1920.988" timestamp="1588521178360" />
+    <state x="525" y="96" width="860" height="847" key="CommitChangelistDialog2" timestamp="1586441401553">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="525" y="96" width="860" height="847" key="CommitChangelistDialog2/0.27.1920.988@0.27.1920.988" timestamp="1586441401553" />
+    <state x="738" y="277" width="735" height="484" key="FileChooserDialogImpl" timestamp="1588537589499">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="738" y="277" width="735" height="484" key="FileChooserDialogImpl/0.27.1920.988@0.27.1920.988" timestamp="1588537589499" />
+    <state width="1874" height="274" key="GridCell.Tab.0.bottom" timestamp="1588539875747">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state width="1874" height="274" key="GridCell.Tab.0.bottom/0.27.1920.988@0.27.1920.988" timestamp="1588539875747" />
+    <state width="1874" height="274" key="GridCell.Tab.0.center" timestamp="1588539875746">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state width="1874" height="274" key="GridCell.Tab.0.center/0.27.1920.988@0.27.1920.988" timestamp="1588539875746" />
+    <state width="1874" height="274" key="GridCell.Tab.0.left" timestamp="1588539875746">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state width="1874" height="274" key="GridCell.Tab.0.left/0.27.1920.988@0.27.1920.988" timestamp="1588539875746" />
+    <state width="1874" height="274" key="GridCell.Tab.0.right" timestamp="1588539875747">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state width="1874" height="274" key="GridCell.Tab.0.right/0.27.1920.988@0.27.1920.988" timestamp="1588539875747" />
+    <state x="443" y="97" width="1024" height="845" key="SettingsEditor" timestamp="1588537595906">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="443" y="97" width="1024" height="845" key="SettingsEditor/0.27.1920.988@0.27.1920.988" timestamp="1588537595906" />
+    <state x="555" y="256" width="800" height="528" key="Vcs.Push.Dialog.v2" timestamp="1586441425465">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="555" y="256" width="800" height="528" key="Vcs.Push.Dialog.v2/0.27.1920.988@0.27.1920.988" timestamp="1586441425465" />
+    <state x="616" y="347" key="com.intellij.ide.util.TipDialog" timestamp="1588540846051">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="616" y="347" key="com.intellij.ide.util.TipDialog/0.27.1920.988@0.27.1920.988" timestamp="1588540846051" />
+    <state x="636" y="313" width="648" height="413" key="git4idea.merge.GitPullDialog" timestamp="1586441609671">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="636" y="313" width="648" height="413" key="git4idea.merge.GitPullDialog/0.27.1920.988@0.27.1920.988" timestamp="1586441609671" />
+    <state x="269" y="121" width="1372" height="798" key="new project wizard" timestamp="1587032070089">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="269" y="121" width="1372" height="798" key="new project wizard/0.27.1920.988@0.27.1920.988" timestamp="1587032070089" />
+    <state x="623" y="241" width="672" height="678" key="search.everywhere.popup" timestamp="1588435491931">
+      <screen x="0" y="27" width="1920" height="988" />
+    </state>
+    <state x="623" y="241" width="672" height="678" key="search.everywhere.popup/0.27.1920.988@0.27.1920.988" timestamp="1588435491931" />
+  </component>
+</project>
