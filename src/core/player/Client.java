@@ -16,6 +16,10 @@ import core.share.action.ActionVisitor;
 
 import core.share.RabbitWrapper;
 
+/**
+ * @author Florian
+ *
+ */
 public class Client {
 
 	private ClientData data;
@@ -90,11 +94,22 @@ public class Client {
 		return this.data;
 	}
 	
+	/**
+	 * Send a move message to the node.
+	 * @param horizontalDirection
+	 * @param verticalDirection
+	 * @throws IOException
+	 */
 	public void move (int horizontalDirection, int verticalDirection) throws IOException {
 		String topic = this.data.getNodeName() + "_move";
 		this.network.publish(topic, ByteSerializable.getBytes(new Direction(this.data.getPlayer(), horizontalDirection, verticalDirection)));
 	}
 
+	
+	/**
+	 * Send a disconnection message to the node.
+	 * @throws IOException
+	 */
 	public void disconnect () throws IOException {
 		String topic = this.data.getNodeName() + "_disconnect";
 		this.network.publish(topic, ByteSerializable.getBytes(this.data.getPlayer()));

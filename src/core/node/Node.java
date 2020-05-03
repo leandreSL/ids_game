@@ -52,6 +52,11 @@ public class Node implements TileVisitor {
 		}
 	}
 	
+	/**
+	 * Initialize the attributes
+	 * Instantiate the board associated to the board name. If it fails, instantiate the board A.
+	 * @param name
+	 */
 	private void init (String name) {
 		this.nodeName = name;
 		
@@ -63,6 +68,10 @@ public class Node implements TileVisitor {
 		}
 		catch (Exception e) {
 			try {
+				/*
+				 * TODO : In a future version this point should be improved, and an other board
+				 * than the board A should be instantiated
+				 */
 				this.board = new BoardFactoryA().createBoard();
 			}
 			catch (WrongSizeBoardException e1) {
@@ -145,6 +154,11 @@ public class Node implements TileVisitor {
 	}
 
 
+	/**
+	 * When a player is received from an other node, i.e. when a player has walked on
+	 * a ChangeZone tile in an other node
+	 * @param playerGameData
+	 */
 	protected void receivePlayerChangeNode(PlayerGameData playerGameData) {
 		if (this.players_list.contains(playerGameData.getPlayer())) return;
 		
@@ -160,6 +174,11 @@ public class Node implements TileVisitor {
 		this.join(player);
 	}
 	
+	/**
+	 * Common method for when a players joins the game for the first time
+	 * or when it joins a node when changing zone.
+	 * @param player
+	 */
 	private void join (Player player) {		
 		ActionMessage action = new UpdateBoard(board);
 		try {
@@ -174,6 +193,11 @@ public class Node implements TileVisitor {
 		this.broadcastPlayers(action, player);
 	}
 	
+	/**
+	 * When a Direction message is received from the player.
+	 * If valid, do the action of the tile where the player wanted to walk on.
+	 * @param direction
+	 */
 	private void move (Direction direction) {
 		Player player = direction.getPlayer();
 		
@@ -192,7 +216,7 @@ public class Node implements TileVisitor {
 
 	/**
 	 * Make the player move on the board.
-	 * Check
+	 * If there are players nearby it, increase the "Hello" players encountered score
 	 */
 	@Override
 	public void executeTileAction(TileLand destinationTile, Player player) {
@@ -250,14 +274,19 @@ public class Node implements TileVisitor {
 
 		}
 		catch (IOException e) {
-			// TODO Si le noeud n'existe pas ? ( = pas d'instance active)
 			e.printStackTrace();
 		}
 	}
 
 	
-	/// TODO : Attendre une r�ponse positive de r�ception ?
-	// Ou seulement v�rifier que la queue est up ?
+	/**
+	 * TODO : In a future version, should check if the targeted node is live or not.
+	 * If not, don't make the player change node.
+	 * @param player
+	 * @param playerGameData
+	 * @param destinationNode
+	 * @throws IOException
+	 */
 	private void makePlayerChangeNode (Player player, PlayerGameData playerGameData, String destinationNode) throws IOException {
 		// Make the player join the new node
 		network.publish(destinationNode + "_change_node", ByteSerializable.getBytes(playerGameData));
@@ -285,6 +314,12 @@ public class Node implements TileVisitor {
 		}
 	}
 	
+	/**
+	 * Send an ActionMessage object to the player
+	 * @param player
+	 * @param action
+	 * @throws IOException
+	 */
 	private void sendActionMessageTo (Player player, ActionMessage action) throws IOException {
 		this.network.publish(player.getId(), ByteSerializable.getBytes(action));
 	}
@@ -308,8 +343,12 @@ public class Node implements TileVisitor {
 		}
 	}
 
+	/**
+	 * Disconnect the player from the node.
+	 * Remove it from the board, send the information to all the other players
+	 * @param player
+	 */
 	protected void disconnect (Player player) {
-		
 		this.players_list.remove(player);
 		this.players_data.remove(player);
 		this.board.removePlayer(player);

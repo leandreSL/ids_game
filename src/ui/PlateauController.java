@@ -79,7 +79,7 @@ public class PlateauController {
     //fixe les nodes adjacents en fonction du node courant, et aussi les couleurs
     public void adjustNodes(){
         colorPlayer = Color.PURPLE;
-        colorOthersPlayers = Color.LIGHTGRAY;
+        colorOthersPlayers = Color.BLACK;
         switch (this.node){
             case "A" :
                 colorNode = Color.DARKGOLDENROD;
