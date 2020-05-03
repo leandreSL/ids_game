@@ -1,6 +1,9 @@
 install: 
 	mvn clean install compile package shade:shade
 	
+compile:
+	mvn clean install compile
+
 nodeA:
 	mvn exec:java@nodeA
 	
