@@ -1,4 +1,0 @@
-- G�rer les d�connexions
-- R�guler l'envoie de messages du client au serveur pour �viter une surcharge & un comportement inattendu
-  (si le joueur spam la touche "fleche" �a doit pas envoyer 400 messages tant que le mouvement est pas trait�)
-  
