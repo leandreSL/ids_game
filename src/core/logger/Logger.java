@@ -1,6 +1,6 @@
 package core.logger;
 
-import core.node.ByteSerializable;
+import core.share.ByteSerializable;
 import core.share.RabbitWrapper;
 
 import java.io.IOException;

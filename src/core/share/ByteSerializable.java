@@ -1,4 +1,4 @@
-package core.node;
+package core.share;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

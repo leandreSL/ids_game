@@ -11,6 +11,7 @@ import java.util.Set;
 import core.node.board.BoardFactory;
 import core.node.board.BoardFactoryA;
 import core.node.board.WrongSizeBoardException;
+import core.share.ByteSerializable;
 import core.share.Direction;
 import core.share.Player;
 import core.share.RabbitWrapper;

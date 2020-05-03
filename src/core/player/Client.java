@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import core.node.ByteSerializable;
+import core.share.ByteSerializable;
 import core.share.Direction;
 import core.share.Player;
 import core.share.action.ActionMessage;

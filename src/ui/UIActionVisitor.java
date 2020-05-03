@@ -45,7 +45,6 @@ public class UIActionVisitor implements ActionVisitor {
 						this.ui.grille[j][i].setFill(this.ui.getColorNode());
 					}
 					if(i == playerMovesMessage.getDestinationTile().getX() && j == playerMovesMessage.getDestinationTile().getY()){
-						System.out.println(this.data.getPlayer() + " == " + ((TileLand)playerMovesMessage.getDestinationTile()).getPlayer());
 						if (this.data.getPlayer().equals(((TileLand)playerMovesMessage.getDestinationTile()).getPlayer())){
 							this.ui.grille[j][i].setFill(this.ui.getColorPlayer());
 						}else {
