@@ -13,7 +13,7 @@ import core.share.board.TileWall;
 public class NodeLogger extends Node {	
 	DateTimeFormatter timeFormatter;
 
-	public NodeLogger (String name, String[] neighbours_node_name) {
+	public NodeLogger (String name) {
 		super(name);
 		timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	}
