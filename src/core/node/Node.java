@@ -2,6 +2,9 @@ package core.node;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,8 +40,19 @@ public class Node implements TileVisitor {
 	Set<Player> players_list;
 	Map<Player, PlayerGameData> players_data;
 	
+	public Node (String name) throws KeyManagementException, NoSuchAlgorithmException, URISyntaxException {
+		this.init(name);
+		
+		try {
+			this.network = new RabbitWrapper();
+			this.initQueues();
+		}
+        catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
-	public Node (String name) {
+	private void init (String name) {
 		this.nodeName = name;
 		
 		try {
@@ -57,21 +71,13 @@ public class Node implements TileVisitor {
 		}
 
         this.players_list = new HashSet<>();
-        this.players_data = new HashMap<>();
-        
-        try {
-			this.network = new RabbitWrapper();
-		}
-        catch (IOException e) {
-			e.printStackTrace();
-		}
-		/*
-		 * Allows the player to join the node (log in the node)
-		 * Allows the player to move on the board
-		 */
-        this.initQueues();
+        this.players_data = new HashMap<>();		
 	}
-	
+
+	/**
+	 * Allows the player to join the node (log in the node)
+	 * Allows the player to move on the board
+	 */
 	private void initQueues () {
 		// For when a player joins the game
         network.createQueueAndListen(this.nodeName + "_join", (consumerTag, delivery) -> {

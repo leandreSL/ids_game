@@ -1,6 +1,9 @@
 package core.player;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +18,7 @@ import core.share.RabbitWrapper;
 
 public class Client {
 
-	final private ClientData data;
+	private ClientData data;
 	private ActionVisitor coreActionVisitor;
 	/**
 	 * Synchronized observable set: set of ActionVisitor instances that will be
@@ -26,9 +29,12 @@ public class Client {
 	private Set<ActionVisitor> actionVisitorsObservers;
 	private RabbitWrapper network;
 
-	public Client(String playerName, String nodeName) throws IOException {
+	public Client(String playerName, String nodeName) throws IOException, KeyManagementException, NoSuchAlgorithmException, URISyntaxException {
 		this.network = new RabbitWrapper();
-		
+		this.init(playerName, nodeName);
+	}
+	
+	private void init (String playerName, String nodeName) throws IOException {
 		String playerId = this.initPlayerQueue();
 		this.data = new ClientData(new Player(playerId, playerName), nodeName);
 		

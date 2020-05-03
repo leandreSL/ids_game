@@ -87,7 +87,7 @@ public class MenuController {
                     Platform.exit();
                     System.exit(0);
                 });
-            }catch(IOException exp){
+            }catch(Exception exp){
                 try {
                     String selected_node= nodes_view.getSelectionModel().getSelectedItem();
                     String client_name = name.getText();
@@ -105,7 +105,7 @@ public class MenuController {
                         Platform.exit();
                         System.exit(0);
                     });
-                }catch(IOException exp2){
+                }catch(Exception exp2){
                     exceptionLabel.setText("Erreur de connexion : reseau");
                 }
 

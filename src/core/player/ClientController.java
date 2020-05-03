@@ -1,6 +1,9 @@
 package core.player;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 import ui.PlateauController;
 import ui.UIActionVisitor;
@@ -12,7 +15,7 @@ public class ClientController {
 		
 	}
 	
-	public void init (String playerName, String nodeName, PlateauController ui) throws IOException {
+	public void init (String playerName, String nodeName, PlateauController ui) throws IOException, KeyManagementException, NoSuchAlgorithmException, URISyntaxException {
 		client = new Client(playerName, nodeName);
 		
 		client.addActionVisitorObservable(new UIActionVisitor(ui,client.getClientData()));

@@ -1,6 +1,9 @@
 package core.node;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -14,7 +17,7 @@ import core.share.board.TileWall;
 public class NodeLogger extends Node {	
 	DateTimeFormatter timeFormatter;
 
-	public NodeLogger (String name) {
+	public NodeLogger (String name) throws KeyManagementException, NoSuchAlgorithmException, URISyntaxException {
 		super(name);
 		timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	}

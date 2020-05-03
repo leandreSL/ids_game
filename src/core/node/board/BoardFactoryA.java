@@ -32,6 +32,13 @@ public class BoardFactoryA implements BoardFactory {
 			tiles[y][x] = new TileChangeZone(x, y, "C");
 		}
 		
+		x = 3;
+		y = 3;
+		tiles[y][x] = new TileWall(x, y);
+		x = 3;
+		y = 2;
+		tiles[y][x] = new TileWall(x, y);
+		
 		x = width-1;
 		y = height-1;
 		tiles[y][x] = new TileWall(x, y);

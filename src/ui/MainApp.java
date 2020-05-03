@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import core.share.RabbitWrapper;
+
 public class MainApp extends Application {
 
     private Stage primaryStage;
@@ -57,6 +59,7 @@ public class MainApp extends Application {
     }
 
     public static void main(String[] args) {
+    	if (args.length == 1) RabbitWrapper.setURI(args[0]);
         launch(args);
     }
 }

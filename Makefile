@@ -1,21 +1,15 @@
 install: 
 	mvn clean install compile package shade:shade
-	
-compile:
-	mvn clean install compile
 
-nodeA:
-	mvn exec:java@nodeA
+node: target/node.jar
+	java -jar target/node.jar $(args)
 	
-nodeB:
-	mvn exec:java@nodeB
+target/node.jar:
+	make install
 	
-nodeC:
-	mvn exec:java@nodeC
-	
-nodeD:
-	mvn exec:java@nodeD
-	
+mvn_node:
+	mvn exec:java@node -Dexec.args="$(args)"
+
 player:
 	mvn exec:java@player
 	
@@ -26,4 +20,4 @@ clean:
 	mvn clean
 
 javafx:
-	mvn javafx:run
+	mvn javafx:run -Dexec.args="$(args)"

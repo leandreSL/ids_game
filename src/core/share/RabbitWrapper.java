@@ -1,6 +1,9 @@
 package core.share;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeoutException;
 
 import com.rabbitmq.client.BuiltinExchangeType;
@@ -14,12 +17,19 @@ import com.rabbitmq.client.DeliverCallback;
  */
 public class RabbitWrapper {
 	protected static final String EXCHANGE_NAME = "game_exchange";
+	private static String URI;
 
 	Channel channel;
-
-	public RabbitWrapper () throws IOException {
+	
+	public RabbitWrapper () throws IOException, KeyManagementException, NoSuchAlgorithmException, URISyntaxException {
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
+		if (URI == null) {
+			factory.setHost("localhost");
+		}
+		else {
+			factory.setUri(URI);
+		}
+		
 		Connection connection;
 
 		try {
@@ -77,6 +87,10 @@ public class RabbitWrapper {
 	 */
 	public void publish (String topic, byte[] message) throws IOException {
 		channel.basicPublish(EXCHANGE_NAME, topic, null, message);
+	}
+
+	public static void setURI(String URI) {
+		URI = URI;
 	}
 
 }
