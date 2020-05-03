@@ -1,10 +1,10 @@
 package core.node.board;
 
-import share.board.Board;
-import share.board.Tile;
-import share.board.TileChangeZone;
-import share.board.TileLand;
-import share.board.TileWall;
+import core.share.board.Board;
+import core.share.board.Tile;
+import core.share.board.TileChangeZone;
+import core.share.board.TileLand;
+import core.share.board.TileWall;
 
 public class BoardFactoryA implements BoardFactory {
 

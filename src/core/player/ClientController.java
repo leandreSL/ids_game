@@ -2,7 +2,6 @@ package core.player;
 
 import java.io.IOException;
 
-import share.Direction;
 import ui.PlateauController;
 import ui.UIActionVisitor;
 

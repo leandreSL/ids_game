@@ -1,10 +1,10 @@
 package core.player;
 
-import share.action.ActionVisitor;
-import share.action.ChangeZone;
-import share.action.PlayerMoves;
-import share.action.UpdateBoard;
-import share.action.UpdateTile;
+import core.share.action.ActionVisitor;
+import core.share.action.ChangeZone;
+import core.share.action.PlayerMoves;
+import core.share.action.UpdateBoard;
+import core.share.action.UpdateTile;
 
 public class CoreActionVisitor implements ActionVisitor {
 	ClientData data;

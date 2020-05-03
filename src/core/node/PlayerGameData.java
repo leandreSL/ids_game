@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import share.Player;
+import core.share.Player;
 
 public class PlayerGameData implements Serializable {
 	private static final long serialVersionUID = 1L;

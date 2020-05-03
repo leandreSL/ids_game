@@ -3,13 +3,13 @@ package ui;
 import core.player.ClientData;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
-import share.action.ActionVisitor;
-import share.action.ChangeZone;
-import share.action.PlayerMoves;
-import share.action.UpdateBoard;
-import share.action.UpdateTile;
-import share.board.Tile;
-import share.board.TileLand;
+import core.share.action.ActionVisitor;
+import core.share.action.ChangeZone;
+import core.share.action.PlayerMoves;
+import core.share.action.UpdateBoard;
+import core.share.action.UpdateTile;
+import core.share.board.Tile;
+import core.share.board.TileLand;
 
 public class UIActionVisitor implements ActionVisitor {
 	PlateauController ui;
@@ -68,7 +68,7 @@ public class UIActionVisitor implements ActionVisitor {
 			this.ui.initPlateau();
 			for (int i=0; i<board.length;i++){
 				for (int j=0; j<board.length;j++){
-					if (board[j][i].getClass().getName() == "share.board.TileLand"){
+					if (board[j][i].getClass().getName() == "core.share.board.TileLand"){
 						if (((TileLand)board[j][i]).getPlayer() == null){
 							ui.grille[j][i].setFill(this.ui.getColorNode());
 						}else if (((TileLand)board[j][i]).getPlayer().equals(this.data.getPlayer())){
@@ -77,10 +77,10 @@ public class UIActionVisitor implements ActionVisitor {
 							ui.grille[j][i].setFill(this.ui.getColorOthersPlayers());
 						}
 					}
-					if(board[j][i].getClass().getName() == "share.board.TileWall"){
+					if(board[j][i].getClass().getName() == "core.share.board.TileWall"){
 						ui.grille[j][i].setFill(Color.DARKGRAY);
 					}
-					if(board[j][i].getClass().getName() == "share.board.TileChangeZone"){
+					if(board[j][i].getClass().getName() == "core.share.board.TileChangeZone"){
 						ui.grille[j][i].setFill(Color.SANDYBROWN);
 					}
 				}
@@ -98,7 +98,7 @@ public class UIActionVisitor implements ActionVisitor {
 
 	public void updateTile(Tile t) {
 		Platform.runLater(() -> {
-			if (t.getClass().getName() == "share.board.TileLand") {
+			if (t.getClass().getName() == "core.share.board.TileLand") {
 				if (((TileLand) t).getPlayer() == null) {
 					ui.grille[t.getY()][t.getX()].setFill(this.ui.getColorNode());
 				} else if (((TileLand) t).getPlayer().equals(this.data.getPlayer())) {
@@ -107,10 +107,10 @@ public class UIActionVisitor implements ActionVisitor {
 					ui.grille[t.getY()][t.getX()].setFill(this.ui.getColorOthersPlayers());
 				}
 			}
-			if (t.getClass().getName() == "share.board.TileWall") {
+			if (t.getClass().getName() == "core.share.board.TileWall") {
 				ui.grille[t.getY()][t.getX()].setFill(Color.DARKGRAY);
 			}
-			if (t.getClass().getName() == "share.board.TileChangeZone") {
+			if (t.getClass().getName() == "core.share.board.TileChangeZone") {
 				ui.grille[t.getY()][t.getX()].setFill(Color.SANDYBROWN);
 			}
 

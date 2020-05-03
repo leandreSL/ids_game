@@ -6,12 +6,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import core.node.ByteSerializable;
-import share.Direction;
-import share.Player;
-import share.action.ActionMessage;
-import share.action.ActionVisitor;
+import core.share.Direction;
+import core.share.Player;
+import core.share.action.ActionMessage;
+import core.share.action.ActionVisitor;
 
-import share.RabbitWrapper;
+import core.share.RabbitWrapper;
 
 public class Client {
 

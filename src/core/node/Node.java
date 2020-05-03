@@ -11,20 +11,20 @@ import java.util.Set;
 import core.node.board.BoardFactory;
 import core.node.board.BoardFactoryA;
 import core.node.board.WrongSizeBoardException;
-import share.Direction;
-import share.Player;
-import share.RabbitWrapper;
-import share.action.ActionMessage;
-import share.action.ChangeZone;
-import share.action.PlayerMoves;
-import share.action.UpdateBoard;
-import share.action.UpdateTile;
-import share.board.Board;
-import share.board.Tile;
-import share.board.TileChangeZone;
-import share.board.TileLand;
-import share.board.TileVisitor;
-import share.board.TileWall;
+import core.share.Direction;
+import core.share.Player;
+import core.share.RabbitWrapper;
+import core.share.action.ActionMessage;
+import core.share.action.ChangeZone;
+import core.share.action.PlayerMoves;
+import core.share.action.UpdateBoard;
+import core.share.action.UpdateTile;
+import core.share.board.Board;
+import core.share.board.Tile;
+import core.share.board.TileChangeZone;
+import core.share.board.TileLand;
+import core.share.board.TileVisitor;
+import core.share.board.TileWall;
 
 
 public class Node implements TileVisitor {	

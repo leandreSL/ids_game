@@ -1,7 +1,7 @@
 package core.logger;
 
 import core.node.ByteSerializable;
-import share.RabbitWrapper;
+import core.share.RabbitWrapper;
 
 import java.io.IOException;
 

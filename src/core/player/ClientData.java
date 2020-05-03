@@ -1,7 +1,7 @@
 package core.player;
 
-import share.Player;
-import share.board.Board;
+import core.share.Player;
+import core.share.board.Board;
 
 public class ClientData {
 	private Player player;
